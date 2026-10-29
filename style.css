@@ -1,0 +1,336 @@
+/* Custom Typography and Root Styling */
+:root {
+    --terminal-bg: #0d1117;
+    --editor-bg: #1e1e1e;
+    --border-color: #2e2e38;
+}
+
+body {
+    background-color: #121217;
+    color: #e4e4e7;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #18181b; 
+}
+::-webkit-scrollbar-thumb {
+    background: #3f3f46; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #52525b; 
+}
+
+/* Hide scrollbar for tabs navigation */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Editor & Terminal Font */
+.font-mono, #terminalBody, .code-area {
+    font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+    font-variant-ligatures: normal;
+}
+
+/* Terminal Styling */
+#terminalBody {
+    background-color: var(--terminal-bg);
+}
+
+.terminal-stdout {
+    color: #e6edf3;
+}
+.terminal-stderr {
+    color: #f87171;
+}
+.terminal-compile-error {
+    color: #fb923c;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+    border-left: 3px solid #ef4444;
+    margin-bottom: 8px;
+    display: block;
+}
+.terminal-info {
+    color: #38bdf8;
+}
+.terminal-success {
+    color: #4ade80;
+}
+.terminal-time {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+/* Monaco Editor Container */
+#monaco-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Modals Animation */
+.animate-in {
+    animation: fadeInScale 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Toast styling */
+.toast {
+    pointer-events: auto;
+    animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Web Development Code Editors */
+.web-code-container textarea {
+    background-color: #1e1e1e;
+    line-height: 1.6;
+    tab-size: 4;
+}
+
+/* Running Pulse Glow */
+.running-pulse {
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+}
+
+/* Screen Reader and Search Engine Crawler Accessibility (SEO) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ============================================
+   STDIN MISSING — INTERACTIVE BANNER STYLES
+   ============================================ */
+.stdin-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(37,99,235,0.1));
+    border: 1px solid rgba(6,182,212,0.4);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    animation: bannerSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bannerSlideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.stdin-banner-icon {
+    font-size: 1.25rem;
+    color: #22d3ee;
+    padding-top: 2px;
+    flex-shrink: 0;
+}
+
+.stdin-banner-body {
+    flex: 1;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+}
+
+.stdin-banner-body strong {
+    display: block;
+    color: #e2e8f0;
+    font-size: 0.78rem;
+    margin-bottom: 3px;
+}
+
+.stdin-banner-body p {
+    margin: 0;
+    color: #94a3b8;
+}
+
+.stdin-banner-body strong + p strong {
+    display: inline;
+    color: #22d3ee;
+}
+
+.stdin-banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.stdin-fill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    background: #0e7490;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.stdin-fill-btn:hover {
+    background: #0891b2;
+}
+
+.stdin-dismiss-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid rgba(148,163,184,0.3);
+    border-radius: 6px;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+}
+.stdin-dismiss-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: #cbd5e1;
+}
+
+
+
+/* ============================================
+   INTERACTIVE INLINE TERMINAL INPUT STYLES
+   ============================================ */
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 8px 0;
+    padding: 6px 10px;
+    background: rgba(34, 211, 238, 0.08);
+    border-left: 3px solid #22d3ee;
+    border-radius: 0 8px 8px 0;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 0.85rem;
+    animation: promptFadeIn 0.2s ease-out;
+}
+
+@keyframes promptFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.terminal-prompt-text {
+    color: #38bdf8;
+    font-weight: 600;
+    white-space: pre-wrap;
+    user-select: none;
+}
+
+.terminal-inline-input {
+    flex: 1;
+    min-width: 160px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    border-radius: 6px;
+    outline: none;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    caret-color: #22d3ee;
+    transition: all 0.2s;
+}
+
+.terminal-inline-input:focus {
+    border-color: #38bdf8;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.terminal-inline-input::placeholder {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+.terminal-input-submitted {
+    background: transparent;
+    border-left: 3px solid #10b981;
+    padding: 2px 10px;
+    margin: 2px 0;
+}
+
+.terminal-input-submitted .terminal-prompt-text {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.terminal-user-answer {
+    color: #34d399;
+    font-weight: 600;
+}
+
+#fallback-code-area {
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e1e;
+    color: #f1f5f9;
+    font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 16px;
+    border: none;
+    outline: none;
+    resize: none;
+    tab-size: 4;
+}
