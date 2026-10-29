@@ -1,10 +1,10 @@
 # robots.txt for Smart Compiler by Archit Bishnoi
-# https://smart-compiler.vercel.app/
+# https://smartcompiler-swart.vercel.app/
 
 User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://smart-compiler.vercel.app/sitemap.xml
-Sitemap: https://smart-compiler.vercel.app/sitemap
+Sitemap: https://smartcompiler-swart.vercel.app/sitemap.xml
+Sitemap: https://smartcompiler-swart.vercel.app/sitemap
 

@@ -4,7 +4,7 @@
 >
 > Inspired by [Programiz](https://www.programiz.com/online-compiler), Smart Compiler is a high-performance, zero-installation online code editor and compiler supporting 16+ programming languages, interactive standard input (stdin), real-time web development preview, and VS Code-grade Monaco editing.
 
-[![Smart Compiler](https://img.shields.io/badge/Smart%20Compiler-v2.0%20Pro-3b82f6?style=for-the-badge&logo=visualstudiocode)](https://smart-compiler.vercel.app/)
+[![Smart Compiler](https://img.shields.io/badge/Smart%20Compiler-v2.0%20Pro-3b82f6?style=for-the-badge&logo=visualstudiocode)](https://smartcompiler-swart.vercel.app/)
 [![Created By Archit Bishnoi](https://img.shields.io/badge/Created%20By-Archit%20Bishnoi-10b981?style=for-the-badge&logo=github)](https://github.com/Archit0029)
 [![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Website-blueviolet?style=for-the-badge&logo=vercel)](https://architbishnoi-portfolio.vercel.app/)
 [![Languages](https://img.shields.io/badge/Languages-16%2B%20Supported-purple?style=for-the-badge)](#-supported-languages)
@@ -98,17 +98,17 @@ Deploying Smart Compiler to Vercel takes less than 2 minutes:
    git add .
    git commit -m "Launch Smart Compiler by Archit Bishnoi"
    git branch -M main
-   git remote add origin https://github.com/Archit0029/smart-compiler.git
+   git remote add origin https://github.com/Archit0029/Web-Development-online.git
    git push -u origin main
    ```
 2. **Import into Vercel**:
    - Go to [vercel.com](https://vercel.com) and log in with your GitHub account.
    - Click **Add New...** > **Project**.
-   - Select your `smart-compiler` repository and click **Import**.
+   - Select your `Web-Development-online` repository and click **Import**.
    - Leave Framework Preset as **Other** (Static Site).
    - Click **Deploy**.
 3. **Live URL**:
-   - Vercel will instantly generate a live URL like `https://smart-compiler.vercel.app`.
+   - Vercel will instantly generate a live URL: `https://smartcompiler-swart.vercel.app`.
 
 ### Method 2: Deploy with Vercel CLI
 
@@ -125,7 +125,7 @@ Follow the simple CLI prompts, and your site is live!
 Once your website is deployed on Vercel:
 
 1. Open [Google Search Console](https://search.google.com/search-console).
-2. Click **Add Property** and select **URL prefix** (e.g. `https://smart-compiler.vercel.app/`).
+2. Click **Add Property** and select **URL prefix** (e.g. `https://smartcompiler-swart.vercel.app/`).
 3. Under **HTML tag** verification method, copy the verification code string (the value inside `content="..."`).
 4. Paste your verification string into `index.html` on line 26:
    ```html
@@ -133,7 +133,7 @@ Once your website is deployed on Vercel:
    ```
 5. Commit and push the change to GitHub (Vercel will auto-redeploy in seconds).
 6. Return to Google Search Console and click **Verify**.
-7. In the left sidebar of Google Search Console, go to **Sitemaps** and submit `sitemap.xml` (e.g. `https://smart-compiler.vercel.app/sitemap.xml`).
+7. In the left sidebar of Google Search Console, go to **Sitemaps** and submit `sitemap.xml` (e.g. `https://smartcompiler-swart.vercel.app/sitemap.xml`).
 8. Googlebot will begin indexing your site for **Archit Bishnoi**, **Smart Compiler**, and all language compiler queries!
 
 ---

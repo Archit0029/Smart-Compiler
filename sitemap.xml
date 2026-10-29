@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
-        <loc>https://smart-compiler.vercel.app/</loc>
+        <loc>https://smartcompiler-swart.vercel.app/</loc>
         <lastmod>2026-10-29T20:00:00+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
