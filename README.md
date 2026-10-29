@@ -98,13 +98,13 @@ Deploying Smart Compiler to Vercel takes less than 2 minutes:
    git add .
    git commit -m "Launch Smart Compiler by Archit Bishnoi"
    git branch -M main
-   git remote add origin https://github.com/Archit0029/Web-Development-online.git
+   git remote add origin https://github.com/Archit0029/Smart-Compiler.git
    git push -u origin main
    ```
 2. **Import into Vercel**:
    - Go to [vercel.com](https://vercel.com) and log in with your GitHub account.
    - Click **Add New...** > **Project**.
-   - Select your `Web-Development-online` repository and click **Import**.
+   - Select your `Smart-Compiler` repository and click **Import**.
    - Leave Framework Preset as **Other** (Static Site).
    - Click **Deploy**.
 3. **Live URL**:
@@ -141,22 +141,14 @@ Once your website is deployed on Vercel:
 ## 📂 Project Structure
 
 ```text
-Smart_compilor/
+Smart-Compiler/
 ├── index.html                  # Main production application & SEO entrypoint
 ├── style.css                   # Custom styling, terminal themes, responsive layouts
 ├── app.js                      # Core compiler engine, Monaco integration & Judge0 API
 ├── vercel.json                 # Vercel deployment configuration & caching headers
 ├── robots.txt                  # Search engine crawling rules & sitemap pointer
 ├── sitemap.xml                 # XML sitemap for Google Search Console
-├── README.md                   # Project documentation & deployment guide
-└── Web-Development-online/     # Legacy & backwards-compatible workspace
-    ├── Index.html              # Mirrored modern Smart Compiler
-    ├── index.css               # Styling
-    ├── Index.js                # Core logic
-    ├── vercel.json             # Vercel deployment config
-    ├── robots.txt              # Robots directive
-    ├── sitemap.xml             # Sitemap
-    └── README.md               # Guide
+└── README.md                   # Project documentation & deployment guide
 ```
 
 ---
