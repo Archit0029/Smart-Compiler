@@ -2,13 +2,19 @@
 
 > Engineered & Created by **[Archit Bishnoi](https://github.com/Archit0029)**
 >
-> Inspired by [Programiz](https://www.programiz.com/online-compiler), Smart Compiler is a high-performance, zero-installation online code editor and compiler supporting 16+ programming languages, interactive standard input (stdin), real-time web development preview, and VS Code-grade Monaco editing.
+> Smart Compiler is a high-performance, zero-installation online code editor and compiler supporting 16+ programming languages, interactive standard input (stdin), real-time web development preview, and VS Code-grade Monaco editing.
 
 [![Smart Compiler](https://img.shields.io/badge/Smart%20Compiler-v2.0%20Pro-3b82f6?style=for-the-badge&logo=visualstudiocode)](https://smartcompiler-swart.vercel.app/)
 [![Created By Archit Bishnoi](https://img.shields.io/badge/Created%20By-Archit%20Bishnoi-10b981?style=for-the-badge&logo=github)](https://github.com/Archit0029)
 [![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Website-blueviolet?style=for-the-badge&logo=vercel)](https://architbishnoi-portfolio.vercel.app/)
 [![Languages](https://img.shields.io/badge/Languages-16%2B%20Supported-purple?style=for-the-badge)](#-supported-languages)
 [![Deploy with Vercel](https://img.shields.io/badge/Deploy%20with-Vercel-black?style=for-the-badge&logo=vercel)](#-deploying-to-vercel)
+
+---
+
+## 📸 Website Preview
+
+[![Smart Compiler Preview](assets/preview.png)](https://smartcompiler-swart.vercel.app/)
 
 ---
 
@@ -142,6 +148,8 @@ Once your website is deployed on Vercel:
 
 ```text
 Smart-Compiler/
+├── assets/
+│   └── preview.png             # UI preview screenshot
 ├── index.html                  # Main production application & SEO entrypoint
 ├── style.css                   # Custom styling, terminal themes, responsive layouts
 ├── app.js                      # Core compiler engine, Monaco integration & Judge0 API
