@@ -2380,19 +2380,30 @@ function closeSettingsModal() {
 }
 
 function toggleSampleDropdown(event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
     const dropdown = document.getElementById('sampleDropdown');
-    if (dropdown) dropdown.classList.toggle('hidden');
     const moreDropdown = document.getElementById('moreDropdown');
     if (moreDropdown) moreDropdown.classList.add('hidden');
+    if (dropdown) dropdown.classList.toggle('hidden');
 }
 
 function toggleMoreDropdown(event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
     const dropdown = document.getElementById('moreDropdown');
-    if (dropdown) dropdown.classList.toggle('hidden');
     const sampleDropdown = document.getElementById('sampleDropdown');
     if (sampleDropdown) sampleDropdown.classList.add('hidden');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
+
+function closeMoreDropdown() {
+    const dropdown = document.getElementById('moreDropdown');
+    if (dropdown) dropdown.classList.add('hidden');
 }
 
 // Bind to window for direct HTML onclick safety
@@ -2404,6 +2415,7 @@ window.openSettingsModal = openSettingsModal;
 window.closeSettingsModal = closeSettingsModal;
 window.toggleSampleDropdown = toggleSampleDropdown;
 window.toggleMoreDropdown = toggleMoreDropdown;
+window.closeMoreDropdown = closeMoreDropdown;
 window.runCode = runCode;
 window.navigateToHome = navigateToHome;
 window.navigateToCompiler = navigateToCompiler;
@@ -2418,14 +2430,8 @@ function setupEventListeners() {
 
     // 2. Examples / Templates dropdown toggle
     const sampleBtn = document.getElementById('sampleModalBtn');
-    const sampleDropdown = document.getElementById('sampleDropdown');
-    if (sampleBtn && sampleDropdown) {
-        sampleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sampleDropdown.classList.toggle('hidden');
-            const moreDropdown = document.getElementById('moreDropdown');
-            if (moreDropdown) moreDropdown.classList.add('hidden');
-        });
+    if (sampleBtn) {
+        sampleBtn.onclick = toggleSampleDropdown;
     }
 
     // 3. Language Selector Modal
@@ -2470,7 +2476,12 @@ function setupEventListeners() {
     if (aboutBtn) aboutBtn.addEventListener('click', openCreator);
 
     const aboutMenuBtn = document.getElementById('aboutCreatorMenuBtn');
-    if (aboutMenuBtn) aboutMenuBtn.addEventListener('click', openCreator);
+    if (aboutMenuBtn) {
+        aboutMenuBtn.addEventListener('click', () => {
+            closeMoreDropdown();
+            openCreator();
+        });
+    }
 
     const footerCreatorBtn = document.getElementById('footerCreatorBtn');
     if (footerCreatorBtn) footerCreatorBtn.addEventListener('click', openCreator);
@@ -2486,19 +2497,27 @@ function setupEventListeners() {
 
     // 5. More Actions Dropdown
     const moreBtn = document.getElementById('moreMenuBtn');
-    const moreDropdown = document.getElementById('moreDropdown');
-    if (moreBtn && moreDropdown) {
-        moreBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            moreDropdown.classList.toggle('hidden');
-            if (sampleDropdown) sampleDropdown.classList.add('hidden');
-        });
+    if (moreBtn) {
+        moreBtn.onclick = toggleMoreDropdown;
     }
 
     // Close dropdowns on outside click
-    document.addEventListener('click', () => {
-        if (sampleDropdown) sampleDropdown.classList.add('hidden');
-        if (moreDropdown) moreDropdown.classList.add('hidden');
+    document.addEventListener('click', (e) => {
+        const moreBtn = document.getElementById('moreMenuBtn');
+        const sampleBtn = document.getElementById('sampleModalBtn');
+        const moreDropdown = document.getElementById('moreDropdown');
+        const sampleDropdown = document.getElementById('sampleDropdown');
+
+        if (moreDropdown && !moreDropdown.classList.contains('hidden')) {
+            if (moreBtn && !moreBtn.contains(e.target) && !moreDropdown.contains(e.target)) {
+                moreDropdown.classList.add('hidden');
+            }
+        }
+        if (sampleDropdown && !sampleDropdown.classList.contains('hidden')) {
+            if (sampleBtn && !sampleBtn.contains(e.target) && !sampleDropdown.contains(e.target)) {
+                sampleDropdown.classList.add('hidden');
+            }
+        }
     });
 
     // 6. Terminal Output Actions
@@ -2524,6 +2543,7 @@ function setupEventListeners() {
     const formatBtn = document.getElementById('formatBtn');
     if (formatBtn) {
         formatBtn.addEventListener('click', () => {
+            closeMoreDropdown();
             if (monacoEditor) {
                 monacoEditor.getAction('editor.action.formatDocument').run();
                 showToast('Code formatted');
@@ -2536,6 +2556,7 @@ function setupEventListeners() {
     const copyBtn = document.getElementById('copyBtn');
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
+            closeMoreDropdown();
             const code = getEditorCode();
             navigator.clipboard.writeText(code).then(() => showToast('Code copied to clipboard!'));
         });
@@ -2544,6 +2565,7 @@ function setupEventListeners() {
     const resetCodeBtn = document.getElementById('resetCodeBtn');
     if (resetCodeBtn) {
         resetCodeBtn.addEventListener('click', () => {
+            closeMoreDropdown();
             if (confirm(`Reset ${LANGUAGES[currentLang].name} code to default template?`)) {
                 loadSample('hello');
             }
@@ -2553,6 +2575,7 @@ function setupEventListeners() {
     const downloadBtn = document.getElementById('downloadBtn');
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
+            closeMoreDropdown();
             const lang = LANGUAGES[currentLang];
             const htmlEl = document.getElementById('web-html-code');
             const code = (lang.isWebMode && htmlEl) ? htmlEl.value : getEditorCode();
@@ -2569,6 +2592,7 @@ function setupEventListeners() {
     const uploadInput = document.getElementById('uploadInput');
     if (uploadInput) {
         uploadInput.addEventListener('change', (e) => {
+            closeMoreDropdown();
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -2590,12 +2614,18 @@ function setupEventListeners() {
 
     if (settingsBtn && settingsModal) {
         settingsBtn.addEventListener('click', () => {
+            closeMoreDropdown();
             settingsModal.classList.remove('hidden');
         });
     }
     if (closeSettingsBtn && settingsModal) {
         closeSettingsBtn.addEventListener('click', () => {
             settingsModal.classList.add('hidden');
+        });
+    }
+    if (settingsModal) {
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target.id === 'settingsModal') closeSettingsModal();
         });
     }
     if (saveSettingsBtn) {

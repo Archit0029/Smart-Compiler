@@ -414,13 +414,13 @@
                         <i class="fas fa-ellipsis-v text-sm"></i>
                     </button>
                     <div id="moreDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1.5 z-50 text-xs">
-                        <button id="formatBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                        <button id="formatBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
                             <i class="fas fa-align-left text-blue-400 w-4"></i> Format Code
                         </button>
-                        <button id="copyBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                        <button id="copyBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
                             <i class="fas fa-copy text-green-400 w-4"></i> Copy Code
                         </button>
-                        <button id="downloadBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                        <button id="downloadBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
                             <i class="fas fa-download text-purple-400 w-4"></i> Download File
                         </button>
                         <label class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
@@ -428,13 +428,13 @@
                             <input type="file" id="uploadInput" class="hidden">
                         </label>
                         <div class="border-t border-gray-800 my-1"></div>
-                        <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-blue-400 hover:text-blue-300">
+                        <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" onclick="closeMoreDropdown()" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-blue-400 hover:text-blue-300 cursor-pointer">
                             <i class="fas fa-globe text-blue-400 w-4"></i> Visit Archit's Portfolio
                         </a>
-                        <button id="aboutCreatorMenuBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                        <button id="aboutCreatorMenuBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
                             <i class="fas fa-user-circle text-gray-400 w-4"></i> About Archit Bishnoi
                         </button>
-                        <button id="resetCodeBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-red-400">
+                        <button id="resetCodeBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-red-400 hover:text-red-300 cursor-pointer">
                             <i class="fas fa-undo text-red-400 w-4"></i> Reset to Default
                         </button>
                         <div class="border-t border-gray-800 my-1"></div>
