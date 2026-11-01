@@ -598,7 +598,11 @@ const SEO_TITLES = {
     'go': 'Online Go Compiler (Golang Online) | Smart Compiler',
     'rust': 'Online Rust Compiler (Rust Online) | Smart Compiler',
     'typescript': 'Online TypeScript Compiler (TS Online) | Smart Compiler',
-    'php': 'Online PHP Compiler (PHP Online) | Smart Compiler'
+    'php': 'Online PHP Compiler (PHP Online) | Smart Compiler',
+    'ruby': 'Online Ruby Compiler (Ruby Online) | Smart Compiler',
+    'kotlin': 'Online Kotlin Compiler (Kotlin Online & JVM) | Smart Compiler',
+    'swift': 'Online Swift Compiler (Swift Online) | Smart Compiler',
+    'bash': 'Online Bash & Shell Script Compiler | Smart Compiler'
 };
 
 function getLanguageFromURL() {
@@ -619,13 +623,19 @@ function updateURLParameter(langId) {
     try {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', langId);
-        window.history.replaceState({ lang: langId }, '', url.toString());
+        window.history.replaceState({ lang: langId }, '', url.pathname + url.search);
     } catch (e) {}
 }
 
 function updateDynamicSEOTitle(langId) {
     const title = SEO_TITLES[langId] || `Online ${LANGUAGES[langId] ? LANGUAGES[langId].name : ''} Compiler | Smart Compiler`;
     document.title = title;
+    try {
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) {
+            canonical.href = `https://smartcompiler-swart.vercel.app/?lang=${langId}`;
+        }
+    } catch (e) {}
 }
 
 // 3. INITIALIZATION
@@ -638,10 +648,32 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initUI() {
+    // If URL contains ?lang=xxx, initialize directly into that language
+    const urlLang = getLanguageFromURL();
+    if (urlLang && LANGUAGES[urlLang]) {
+        currentLang = urlLang;
+    }
+
     renderQuickLangPills();
     renderAllLanguagesGrid();
     renderSampleDropdown();
     loadLanguage(currentLang);
+    updateURLParameter(currentLang);
+    updateDynamicSEOTitle(currentLang);
+
+    // Support browser back/forward buttons (popstate)
+    window.addEventListener('popstate', () => {
+        const l = getLanguageFromURL();
+        if (l && l !== currentLang && LANGUAGES[l]) {
+            currentLang = l;
+            loadLanguage(l);
+            renderQuickLangPills();
+            renderSampleDropdown();
+            const searchInput = document.getElementById('langSearchInput');
+            renderAllLanguagesGrid(searchInput ? searchInput.value : '');
+            updateDynamicSEOTitle(l);
+        }
+    });
 
     // Apply settings values to modal inputs
     document.getElementById('settingTheme').value = settings.theme;
@@ -920,6 +952,8 @@ function switchLanguage(langId) {
     renderSampleDropdown();
     const searchInput = document.getElementById('langSearchInput');
     renderAllLanguagesGrid(searchInput ? searchInput.value : '');
+    updateURLParameter(langId);
+    updateDynamicSEOTitle(langId);
     showToast(`Switched to ${LANGUAGES[langId].name}`);
 }
 
