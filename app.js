@@ -859,7 +859,7 @@ function loadLanguage(langId) {
     if (engineLabel) {
         engineLabel.textContent = lang.isWebMode 
             ? 'Engine: Sandboxed In-Browser Preview' 
-            : `Engine: Judge0 Cloud (${lang.label})`;
+            : (lang.id === 'python' ? 'Engine: Python 3 (Live Interactive Engine)' : `Engine: Judge0 Cloud (${lang.label})`);
     }
 
     const compilerMode = document.getElementById('compilerModeView');
@@ -973,6 +973,125 @@ function saveSettings() {
 // 6. CODE EXECUTION ENGINE — INTERACTIVE INLINE TERMINAL
 // ==========================================
 
+// ==========================================
+// 6. CODE EXECUTION ENGINE — LIVE INTERACTIVE RUNNER (PROGRAMIZ GRADE)
+// ==========================================
+
+let isPythonRunning = false;
+let currentPythonAbort = null;
+
+function stopCurrentExecution() {
+    if (isPythonRunning) {
+        isPythonRunning = false;
+        if (currentPythonAbort) {
+            try { currentPythonAbort(); } catch (e) {}
+            currentPythonAbort = null;
+        }
+        const activeInput = document.querySelector('.terminal-inline-input');
+        if (activeInput) {
+            const line = activeInput.closest('.terminal-input-line');
+            if (line) line.remove();
+        }
+        updateStatusBadge('Stopped', 'bg-gray-800 text-gray-400 border-gray-700');
+        appendTerminal('\n[Program terminated by user]', 'info');
+    }
+    setExecutingState(false);
+}
+
+// In-Browser Live Interactive Python Execution (Zero-latency, live menus & while-loops)
+async function runPythonInteractive(code) {
+    if (typeof Sk === 'undefined') {
+        appendTerminal('[Notice: Loading in-browser Python engine... Please wait 2 seconds and click Run again]\n', 'info');
+        setExecutingState(false);
+        return;
+    }
+
+    isPythonRunning = true;
+    updateStatusBadge('Running...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
+
+    const metricsBar = document.getElementById('metricsBar');
+    if (metricsBar) {
+        metricsBar.classList.remove('hidden');
+        metricsBar.classList.add('flex');
+    }
+    const timeEl = document.getElementById('timeMetric');
+    const memoryEl = document.getElementById('memoryMetric');
+    if (memoryEl) memoryEl.textContent = '0.50 MB';
+
+    const startTime = performance.now();
+
+    currentPythonAbort = () => {
+        isPythonRunning = false;
+    };
+
+    Sk.configure({
+        output: function(text) {
+            if (!isPythonRunning) return;
+            appendTerminal(text, 'stdout');
+        },
+        read: function(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles['files'][x] === undefined) {
+                throw 'File not found: ' + x;
+            }
+            return Sk.builtinFiles['files'][x];
+        },
+        inputfun: function(prompt) {
+            if (!isPythonRunning) {
+                return Promise.reject(new Error('Execution stopped by user'));
+            }
+            updateStatusBadge('Waiting for Input...', 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30');
+            return askInTerminal(prompt).then((val) => {
+                if (isPythonRunning) {
+                    updateStatusBadge('Running...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
+                }
+                return val;
+            });
+        },
+        inputfunTakesPrompt: true,
+        yieldLimit: 100, // Keeps browser responsive during while-loops
+        execLimit: 180000 // 3 minutes timeout safety
+    });
+
+    try {
+        await Sk.misceval.asyncToPromise(() => {
+            return Sk.importMainWithBody('<stdin>', false, code, true);
+        });
+
+        const duration = ((performance.now() - startTime) / 1000).toFixed(3);
+        if (timeEl) timeEl.textContent = `${duration}s`;
+        updateStatusBadge('Accepted', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30');
+
+    } catch (err) {
+        const duration = ((performance.now() - startTime) / 1000).toFixed(3);
+        if (timeEl) timeEl.textContent = `${duration}s`;
+
+        const errStr = err.toString();
+
+        if (errStr.includes('Execution stopped by user') || !isPythonRunning) {
+            updateStatusBadge('Stopped', 'bg-gray-800 text-gray-400 border-gray-700');
+            return;
+        }
+
+        // If user imported a third-party module (like numpy, pandas), fallback to Judge0 Cloud
+        if (errStr.includes('ImportError') || errStr.includes('No module named')) {
+            appendTerminal('\n[Switching to Judge0 Cloud Engine for external library support...]\n', 'info');
+            await runCodeViaJudge0(code, LANGUAGES['python']);
+            return;
+        }
+
+        updateStatusBadge('Runtime Error', 'bg-amber-500/20 text-amber-400 border-amber-500/30');
+        appendTerminal('\n' + errStr, 'error');
+    } finally {
+        isPythonRunning = false;
+        currentPythonAbort = null;
+        setExecutingState(false);
+    }
+}
+
+// ----------------------------------------------------
+// Static Flow & Judge0 Engine for Compiled Runtimes (C, C++, Java, etc.)
+// ----------------------------------------------------
+
 function cleanCodeForAnalysis(code, langId) {
     const lines = code.split('\n');
     const cleaned = [];
@@ -1009,7 +1128,6 @@ function cleanCodeForAnalysis(code, langId) {
             }
             cleaned.push(s);
         } else {
-            // C-style languages (C, C++, Java, JS, TS, C#, Go, Rust, PHP, Kotlin, Swift)
             if (inBlockComment) {
                 if (trimmed.includes('*/')) inBlockComment = false;
                 continue;
@@ -1050,28 +1168,7 @@ function analyzeExecutionFlow(rawCode, langId) {
         const line = lines[i].trim();
         if (!line) continue;
 
-        if (langId === 'python') {
-            const inputMatch = line.match(/\binput\s*\(\s*(?:[fFrRbB]*(['"`])([\s\S]*?)\1)?\s*\)/);
-            if (inputMatch) {
-                if (!firstInputEncountered) {
-                    firstInputEncountered = true;
-                    while (pendingPrints.length > 0) {
-                        initialPrints.push(pendingPrints.shift());
-                    }
-                }
-                let prompt = inputMatch[2] !== undefined ? inputMatch[2] : null;
-                if (!prompt && pendingPrints.length > 0) {
-                    prompt = pendingPrints.pop();
-                }
-                inputPrompts.push(prompt || 'Enter input: ');
-            } else if (!firstInputEncountered) {
-                const printMatch = line.match(/\bprint\s*\(\s*(?:[fFrRbB]*(['"`])([\s\S]*?)\1|([^)]+))\s*\)/);
-                if (printMatch) {
-                    const text = printMatch[2] !== undefined ? printMatch[2] : (printMatch[3] ? printMatch[3].replace(/['"]/g, '').trim() : '');
-                    if (text) pendingPrints.push(text);
-                }
-            }
-        } else if (langId === 'cpp' || langId === 'c') {
+        if (langId === 'cpp' || langId === 'c') {
             const isCin = /\bcin\s*>>|\bgetline\s*\(/.test(line);
             const isScanf = /\bscanf\s*\(|\bgets\s*\(|\bfgets\s*\([^,]+,\s*[^,]+,\s*stdin\)/.test(line);
 
@@ -1115,7 +1212,6 @@ function analyzeExecutionFlow(rawCode, langId) {
                 }
             }
         } else {
-            // Other runtimes (C#, Go, Rust, Ruby, PHP, Swift, Bash)
             const inputKeywords = /\b(Console\.ReadLine|fmt\.Scan|io::stdin|fgets|readline|readln|read -p)\b/;
             if (inputKeywords.test(line)) {
                 let prompt = null;
@@ -1165,7 +1261,7 @@ function askInTerminal(promptText) {
         inputEl.setAttribute('autocomplete', 'off');
         inputEl.setAttribute('autocorrect', 'off');
         inputEl.setAttribute('spellcheck', 'false');
-        inputEl.placeholder = 'Type answer & press Enter ↵';
+        inputEl.placeholder = 'Type here & press Enter ↵';
         line.appendChild(inputEl);
 
         terminal.appendChild(line);
@@ -1181,6 +1277,7 @@ function askInTerminal(promptText) {
             answerSpan.textContent = val;
             line.appendChild(answerSpan);
             line.className = 'terminal-input-line terminal-input-submitted';
+            terminal.scrollTop = terminal.scrollHeight;
             resolve(val);
         };
 
@@ -1206,7 +1303,6 @@ function cleanResultOutput(rawStdout, initialPrints, inputPrompts) {
     if (!rawStdout) return '';
     let result = rawStdout;
 
-    // Remove initial prints if present at the start of rawStdout
     if (initialPrints && initialPrints.length > 0) {
         for (const p of initialPrints) {
             if (!p) continue;
@@ -1217,7 +1313,6 @@ function cleanResultOutput(rawStdout, initialPrints, inputPrompts) {
         }
     }
 
-    // Remove the prompt strings that were displayed during interactive input
     if (inputPrompts && inputPrompts.length > 0) {
         for (const prompt of inputPrompts) {
             if (!prompt) continue;
@@ -1233,7 +1328,10 @@ function cleanResultOutput(rawStdout, initialPrints, inputPrompts) {
 }
 
 async function runCode() {
-    if (isExecuting) return;
+    if (isExecuting) {
+        stopCurrentExecution();
+        return;
+    }
 
     const lang = LANGUAGES[currentLang];
     if (lang.isWebMode) {
@@ -1249,6 +1347,28 @@ async function runCode() {
 
     clearTerminal();
 
+    // Python uses real-time interactive execution (like Programiz)
+    if (lang.id === 'python') {
+        setExecutingState(true);
+        await runPythonInteractive(code);
+        return;
+    }
+
+    // JavaScript runs via in-browser sandboxed VM
+    if (lang.id === 'javascript') {
+        setExecutingState(true);
+        runClientSideJS(code);
+        setExecutingState(false);
+        return;
+    }
+
+    // All other languages use Cloud Judge0 engine
+    await runCodeViaJudge0(code, lang);
+}
+
+async function runCodeViaJudge0(code, lang) {
+    setExecutingState(true);
+
     const flow = analyzeExecutionFlow(code, lang.id);
 
     let stdin = '';
@@ -1256,9 +1376,6 @@ async function runCode() {
     let initialPrints = [];
 
     if (flow.needsStdin) {
-        setExecutingState(true);
-
-        // Print initial output fast before asking for input
         if (flow.initialPrints.length > 0) {
             for (const p of flow.initialPrints) {
                 appendTerminal(p, 'stdout');
@@ -1274,7 +1391,6 @@ async function runCode() {
 
         updateStatusBadge('Executing...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
     } else {
-        setExecutingState(true);
         updateStatusBadge('Executing...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
     }
 
@@ -1305,12 +1421,8 @@ async function runCode() {
 
     } catch (err) {
         console.error('Remote execution error:', err);
-        if (lang.id === 'javascript') {
-            runClientSideJS(code);
-        } else {
-            appendTerminal(`\n[Execution Error]: ${err.message}\nPlease check your internet connection or try again shortly.`, 'error');
-            updateStatusBadge('Failed', 'bg-red-500/20 text-red-400 border-red-500/30');
-        }
+        appendTerminal(`\n[Execution Error]: ${err.message}\nPlease check your internet connection or try again shortly.`, 'error');
+        updateStatusBadge('Failed', 'bg-red-500/20 text-red-400 border-red-500/30');
     } finally {
         setExecutingState(false);
     }
