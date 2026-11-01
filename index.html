@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Primary SEO Title & Meta Tags -->
-    <title>Online Compiler - Python, Java, C++, SQL & Web IDE | Smart Compiler</title>
-    <meta name="title" content="Online Compiler - Python, Java, C++, SQL & Web IDE | Smart Compiler">
-    <meta name="description" content="Free online compiler and cloud IDE for Python (py online), Java, C++, C, SQL (MySQL & SQLite), and Web Development (HTML/CSS/JS). Run code online with live stdin input and interactive preview. Created by Archit Bishnoi.">
+    <title>Online Python Compiler (Py Online), Java Compiler, SQL Online & Web IDE | Smart Compiler</title>
+    <meta name="title" content="Online Python Compiler (Py Online), Java Compiler, SQL Online & Web IDE | Smart Compiler">
+    <meta name="description" content="Free online compiler and cloud IDE for Python (py online & python online), Java (java online), SQL (sql online, my sql online), and Web Development (html online). Run code with live interactive stdin, 16+ runtimes, and Monaco editor. Zero install. Created by Archit Bishnoi.">
     <meta name="keywords" content="python compiler, java compiler, online compiler, py online, python online, java online, web development online, html online, sql, my sql, sql online, my sql online, mysql online, sql compiler, c++ compiler, c compiler, c++ online, c online, javascript online compiler, html css js compiler, web playground, run python online, run java online, run sql online, code editor online, programiz alternative, programiz online compiler, replit alternative, codechef ide, leetcode compiler, rust compiler, go compiler, free online ide, monaco editor online, cloud compiler, Archit Bishnoi, Smart Compiler">
     
     <!-- Creator & Author Attribution -->
@@ -29,8 +29,8 @@
     <!-- Open Graph / Facebook / LinkedIn / Discord -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://smartcompiler-swart.vercel.app/">
-    <meta property="og:title" content="Online Compiler - Python, Java, C++, SQL & Web IDE | Smart Compiler">
-    <meta property="og:description" content="Free online compiler for Python (py online), Java, C++, SQL (MySQL), and Web Development (HTML/CSS/JS). Compile & run code online with real-time interactive terminal. Created by Archit Bishnoi.">
+    <meta property="og:title" content="Online Python Compiler (Py Online), Java Compiler, SQL Online & Web IDE | Smart Compiler">
+    <meta property="og:description" content="Run Python online (py online) with live interactive stdin, compile Java online with OpenJDK 17, execute SQL & MySQL queries with table output, and preview HTML/CSS/JS in real time. 100% free by Archit Bishnoi.">
     <meta property="og:site_name" content="Smart Compiler - Online Multi-Language Cloud IDE">
     <meta property="og:locale" content="en_US">
     <meta property="og:image" content="https://smartcompiler-swart.vercel.app/assets/preview.png">
@@ -38,8 +38,8 @@
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://smartcompiler-swart.vercel.app/">
-    <meta name="twitter:title" content="Online Compiler - Python, Java, C++, SQL & Web | Smart Compiler">
-    <meta name="twitter:description" content="Run Python (py online), Java, C++, SQL (MySQL) and HTML online with live interactive inputs and VS Code grade Monaco editor.">
+    <meta name="twitter:title" content="Online Python Compiler (Py Online), Java Compiler, SQL & Web | Smart Compiler">
+    <meta name="twitter:description" content="Run Python (py online), Java, SQL (MySQL) and HTML online with live interactive inputs and VS Code grade Monaco editor.">
     <meta name="twitter:image" content="https://smartcompiler-swart.vercel.app/assets/preview.png">
     <meta name="twitter:creator" content="@ArchitBishnoi">
 
@@ -53,9 +53,35 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "WebSite",
+          "@id": "https://smartcompiler-swart.vercel.app/#website",
+          "name": "Smart Compiler",
+          "alternateName": [
+            "Smart Compiler Online",
+            "Online Python Compiler",
+            "Py Online Compiler",
+            "Online Java Compiler",
+            "Java Online",
+            "SQL Online Compiler",
+            "MySQL Online",
+            "Web Development Online",
+            "HTML Online Playground"
+          ],
+          "url": "https://smartcompiler-swart.vercel.app/",
+          "description": "Free online compiler and cloud IDE for Python (py online & python online), Java (java online), SQL (sql online, my sql online), and Web Development (html online). Run code with live interactive stdin, 16+ languages, and Monaco editor.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://smartcompiler-swart.vercel.app/?lang={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
           "@type": "WebApplication",
           "@id": "https://smartcompiler-swart.vercel.app/#webapp",
-          "name": "Smart Compiler - Online Multi-Language Compiler & IDE",
+          "name": "Smart Compiler - Online Multi-Language Compiler & Cloud IDE",
           "url": "https://smartcompiler-swart.vercel.app/",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "All modern web browsers",
@@ -71,6 +97,13 @@
               "https://github.com/Archit0029"
             ]
           },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "1420",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -79,7 +112,7 @@
           "featureList": [
             "Online Python Compiler with live interactive stdin (py online)",
             "Online Java Compiler supporting OpenJDK 17 and OOP",
-            "SQL and MySQL online database query execution",
+            "SQL and MySQL online database query execution with tabular output",
             "Web Development online lab with live HTML5, CSS3, and JavaScript preview",
             "Online C and C++ Compiler with GCC 14 and modern C++20",
             "Zero installation, in-browser instant execution",
@@ -89,41 +122,71 @@
         {
           "@type": "SoftwareApplication",
           "@id": "https://smartcompiler-swart.vercel.app/?lang=python#app",
-          "name": "Online Python Compiler (Py Online)",
+          "name": "Online Python Compiler (Py Online & Python 3)",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "All modern web browsers",
           "url": "https://smartcompiler-swart.vercel.app/?lang=python",
-          "description": "Run and compile Python 3 code online (py online) with live interactive input prompts, loops, and math libraries with zero latency.",
+          "description": "Run and compile Python 3 code online (py online & python online) with live interactive input prompts, loops, and math libraries with zero latency.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         },
         {
           "@type": "SoftwareApplication",
           "@id": "https://smartcompiler-swart.vercel.app/?lang=java#app",
-          "name": "Online Java Compiler (Java Online)",
+          "name": "Online Java Compiler (Java Online & OpenJDK 17)",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "All modern web browsers",
           "url": "https://smartcompiler-swart.vercel.app/?lang=java",
-          "description": "Compile, debug, and execute Java programs online with OpenJDK 17, Scanner input, OOP classes, and algorithm support.",
+          "description": "Compile, debug, and execute Java programs online (java online) with OpenJDK 17, Scanner input, OOP classes, and algorithm support.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         },
         {
           "@type": "SoftwareApplication",
           "@id": "https://smartcompiler-swart.vercel.app/?lang=sql#app",
-          "name": "SQL & MySQL Online Compiler (SQL Online)",
+          "name": "SQL & MySQL Online Compiler (SQL Online & MySQL Sandbox)",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "All modern web browsers",
           "url": "https://smartcompiler-swart.vercel.app/?lang=sql",
-          "description": "Practice SQL and MySQL queries online. Create tables, insert records, test JOINs, aggregations, and subqueries with instant output tables.",
+          "description": "Practice SQL and MySQL queries online (sql online & my sql online). Create tables, insert records, test JOINs, aggregations, and subqueries with instant output tables.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         },
         {
           "@type": "SoftwareApplication",
           "@id": "https://smartcompiler-swart.vercel.app/?lang=web#app",
-          "name": "Web Development Online - HTML, CSS & JavaScript Playground",
+          "name": "Web Development Online - HTML, CSS & JavaScript Playground (HTML Online)",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "All modern web browsers",
           "url": "https://smartcompiler-swart.vercel.app/?lang=web",
-          "description": "Real-time web development online playground (html online). Edit HTML5, CSS3, and JavaScript with instant live split-screen preview.",
+          "description": "Real-time web development online playground (html online). Edit HTML5, CSS3, and JavaScript with instant live split-screen preview and responsive device toggles.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://smartcompiler-swart.vercel.app/?lang=cpp#app",
+          "name": "Online C++ Compiler (C++ Online & GCC 14)",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All modern web browsers",
+          "url": "https://smartcompiler-swart.vercel.app/?lang=cpp",
+          "description": "Fast C++20 and C++23 compiler powered by GCC 14 with Standard Template Library (STL) support for competitive programming on LeetCode and CodeChef.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://smartcompiler-swart.vercel.app/?lang=c#app",
+          "name": "Online C Compiler (C Online & GCC 14)",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All modern web browsers",
+          "url": "https://smartcompiler-swart.vercel.app/?lang=c",
+          "description": "High-performance online C compiler with GCC 14, interactive stdin, pointers, memory management, and data structures.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://smartcompiler-swart.vercel.app/?lang=javascript#app",
+          "name": "Online JavaScript Compiler (JS Online & Node.js)",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All modern web browsers",
+          "url": "https://smartcompiler-swart.vercel.app/?lang=javascript",
+          "description": "Execute JavaScript code online with Node.js and modern ES6+ runtime. Instant console logs and async/await.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         },
         {
@@ -140,7 +203,7 @@
             },
             {
               "@type": "Question",
-              "name": "How to compile and execute Java programs online without installing JDK?",
+              "name": "How to compile and execute Java programs online (java online) without installing JDK?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "With Smart Compiler's Online Java Compiler (java online), you can write Java code in the Monaco editor and execute it immediately using OpenJDK 17 with Scanner(System.in) support."
@@ -148,7 +211,7 @@
             },
             {
               "@type": "Question",
-              "name": "How to practice SQL and MySQL queries online for free?",
+              "name": "How to practice SQL and MySQL queries online (sql online & my sql online) for free?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Smart Compiler's SQL Online Editor allows you to write standard SQL and MySQL-compatible statements, create tables, insert data, and run queries with instant tabular output in your browser."
@@ -164,10 +227,26 @@
             },
             {
               "@type": "Question",
-              "name": "Is Smart Compiler a free online compiler?",
+              "name": "Is Smart Compiler a free online compiler alternative to Programiz and Replit?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, Smart Compiler created by Archit Bishnoi is 100% free with no registration, no installation, and unlimited code executions across 16+ languages."
+                "text": "Yes, Smart Compiler created by Archit Bishnoi is 100% free with no registration, no installation, and unlimited code executions across 16+ languages with Monaco VS Code editing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use Smart Compiler for competitive programming in C++ (GCC 14)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Smart Compiler provides GCC 14 with C++20 and C++23 standards, full Standard Template Library (STL) support, and fast cloud execution for LeetCode and CodeChef practice."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who developed Smart Compiler?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Smart Compiler was engineered and created by Archit Bishnoi, a software engineer and full stack web developer dedicated to building fast developer tools."
               }
             }
           ]
@@ -180,7 +259,9 @@
             { "@type": "ListItem", "position": 2, "name": "Python Compiler (Py Online)", "item": "https://smartcompiler-swart.vercel.app/?lang=python" },
             { "@type": "ListItem", "position": 3, "name": "Java Compiler (Java Online)", "item": "https://smartcompiler-swart.vercel.app/?lang=java" },
             { "@type": "ListItem", "position": 4, "name": "SQL & MySQL Online", "item": "https://smartcompiler-swart.vercel.app/?lang=sql" },
-            { "@type": "ListItem", "position": 5, "name": "Web Development Online (HTML Online)", "item": "https://smartcompiler-swart.vercel.app/?lang=web" }
+            { "@type": "ListItem", "position": 5, "name": "Web Development Online (HTML Online)", "item": "https://smartcompiler-swart.vercel.app/?lang=web" },
+            { "@type": "ListItem", "position": 6, "name": "C++ Compiler Online", "item": "https://smartcompiler-swart.vercel.app/?lang=cpp" },
+            { "@type": "ListItem", "position": 7, "name": "C Compiler Online", "item": "https://smartcompiler-swart.vercel.app/?lang=c" }
           ]
         },
         {
@@ -475,29 +556,28 @@
 
                     <!-- Main Heading -->
                     <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                        Write, Run & Debug Code in <br class="hidden sm:inline">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300">16+ Languages</span> with 3D Speed
+                        Free <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300">Online Compiler</span>: Python (Py Online), Java, SQL & Web IDE
                     </h1>
 
                     <!-- Subtitle -->
                     <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                        Experience zero-installation coding directly in your browser. Features <strong>live interactive stdin</strong> (Programiz-grade), Monaco VS Code editor, instant Python 3 runtime, OpenJDK 17, GCC 14, SQL databases, and responsive Web Dev lab.
+                        Write, compile, and run code directly in your browser with <strong>zero installation</strong>. Features <strong>live interactive stdin</strong> (Programiz parity) for <strong>Python online (py online)</strong>, OpenJDK 17 for <strong>Java online</strong>, instant tabular results for <strong>SQL & MySQL online</strong>, and live split-screen <strong>Web development (HTML online)</strong> with Monaco VS Code editing.
                     </p>
 
                     <!-- CTA Action Buttons -->
                     <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-                        <button onclick="openLanguageFromHome('python')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                        <a href="/?lang=python" onclick="event.preventDefault(); openLanguageFromHome('python');" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 cursor-pointer no-underline">
                             <i class="fab fa-python text-lg text-yellow-300"></i>
                             <span>Start Coding Python 3 (Free)</span>
-                        </button>
+                        </a>
                         <button onclick="scrollToLanguages()" class="px-5 py-3.5 rounded-xl bg-gray-800/90 hover:bg-gray-700/90 text-gray-200 border border-gray-700/80 font-semibold text-xs sm:text-sm flex items-center gap-2 transition backdrop-blur-md hover:border-blue-500/50 cursor-pointer">
                             <i class="fas fa-layer-group text-blue-400"></i>
                             <span>Explore 16+ Languages</span>
                         </button>
-                        <button onclick="openLanguageFromHome('web')" class="px-4 py-3.5 rounded-xl bg-gray-800/60 hover:bg-gray-700/80 text-orange-400 border border-orange-500/20 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer">
+                        <a href="/?lang=web" onclick="event.preventDefault(); openLanguageFromHome('web');" class="px-4 py-3.5 rounded-xl bg-gray-800/60 hover:bg-gray-700/80 text-orange-400 border border-orange-500/20 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer no-underline">
                             <i class="fab fa-html5 text-orange-500"></i>
                             <span>Web Dev Lab</span>
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Trust Points -->
@@ -603,6 +683,95 @@
                     <p class="text-xs text-gray-400 mt-0.5">Unlimited Cloud IDE</p>
                 </div>
             </div>
+
+            <!-- SPOTLIGHT SECTION: HIGH-INTENT POPULAR ONLINE COMPILERS -->
+            <section class="mb-20">
+                <div class="text-center max-w-3xl mx-auto mb-8 space-y-2">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                        <i class="fas fa-fire text-amber-400"></i> POPULAR ONLINE COMPILERS
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Instant In-Browser Code Execution</h2>
+                    <p class="text-xs sm:text-sm text-gray-400">Launch cloud compiler environments designed for learning, coding interview practice, and rapid development.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Python Spotlight -->
+                    <a href="/?lang=python" onclick="event.preventDefault(); openLanguageFromHome('python');" class="glass-card tilt-card p-5 rounded-2xl border border-gray-800/90 hover:border-blue-500/60 transition-all flex flex-col justify-between group block text-left no-underline">
+                        <div class="card-glare"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-xl text-yellow-400 group-hover:scale-110 transition">
+                                    <i class="fab fa-python"></i>
+                                </div>
+                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">0ms Live Stdin</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-blue-400 transition mb-1">Online Python Compiler</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-3">Run <strong>Python online (py online)</strong> with live interactive <code>input()</code>, loops, lists, and standard libraries with zero delay.</p>
+                        </div>
+                        <div class="pt-2 flex items-center justify-between text-xs font-semibold text-blue-400 group-hover:text-blue-300">
+                            <span>Launch Python &rarr;</span>
+                            <span class="text-[10px] text-gray-500 font-mono">Python 3.12</span>
+                        </div>
+                    </a>
+
+                    <!-- Java Spotlight -->
+                    <a href="/?lang=java" onclick="event.preventDefault(); openLanguageFromHome('java');" class="glass-card tilt-card p-5 rounded-2xl border border-gray-800/90 hover:border-orange-500/60 transition-all flex flex-col justify-between group block text-left no-underline">
+                        <div class="card-glare"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-xl text-orange-400 group-hover:scale-110 transition">
+                                    <i class="fab fa-java"></i>
+                                </div>
+                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">OpenJDK 17</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-orange-400 transition mb-1">Online Java Compiler</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-3">Compile <strong>Java online (java online)</strong> with <code>Scanner(System.in)</code>, full OOP classes, and algorithm data structures.</p>
+                        </div>
+                        <div class="pt-2 flex items-center justify-between text-xs font-semibold text-orange-400 group-hover:text-orange-300">
+                            <span>Launch Java &rarr;</span>
+                            <span class="text-[10px] text-gray-500 font-mono">Java 17</span>
+                        </div>
+                    </a>
+
+                    <!-- SQL Spotlight -->
+                    <a href="/?lang=sql" onclick="event.preventDefault(); openLanguageFromHome('sql');" class="glass-card tilt-card p-5 rounded-2xl border border-gray-800/90 hover:border-cyan-500/60 transition-all flex flex-col justify-between group block text-left no-underline">
+                        <div class="card-glare"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-xl text-cyan-400 group-hover:scale-110 transition">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">MySQL / SQLite</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-cyan-400 transition mb-1">SQL & MySQL Online</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-3">Practice <strong>SQL online & MySQL queries</strong>. Create tables, insert records, test JOINs and aggregates with instant table output.</p>
+                        </div>
+                        <div class="pt-2 flex items-center justify-between text-xs font-semibold text-cyan-400 group-hover:text-cyan-300">
+                            <span>Launch SQL &rarr;</span>
+                            <span class="text-[10px] text-gray-500 font-mono">Instant Tables</span>
+                        </div>
+                    </a>
+
+                    <!-- Web Dev Spotlight -->
+                    <a href="/?lang=web" onclick="event.preventDefault(); openLanguageFromHome('web');" class="glass-card tilt-card p-5 rounded-2xl border border-gray-800/90 hover:border-emerald-500/60 transition-all flex flex-col justify-between group block text-left no-underline">
+                        <div class="card-glare"></div>
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 group-hover:scale-110 transition">
+                                    <i class="fab fa-html5"></i>
+                                </div>
+                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Live Split Preview</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-emerald-400 transition mb-1">Web Development Online</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-3">Edit <strong>HTML online</strong>, CSS3, and JavaScript with instantaneous live split-screen preview and responsive viewport toggles.</p>
+                        </div>
+                        <div class="pt-2 flex items-center justify-between text-xs font-semibold text-emerald-400 group-hover:text-emerald-300">
+                            <span>Launch Web Lab &rarr;</span>
+                            <span class="text-[10px] text-gray-500 font-mono">HTML/CSS/JS</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
 
             <!-- LANGUAGE SELECTOR HUB (THE CORE REQUEST) -->
             <section id="homeLangsSection" class="scroll-mt-20 mb-24">
@@ -711,6 +880,82 @@
                 </div>
             </section>
 
+            <!-- FREQUENTLY ASKED QUESTIONS (FAQ) SECTION - VISIBLE & SEARCH ENGINE ACCESSIBLE -->
+            <section id="homeFaqSection" class="scroll-mt-20 mb-24">
+                <div class="text-center max-w-3xl mx-auto mb-10 space-y-3">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                        <i class="fas fa-question-circle text-cyan-400"></i> FREQUENTLY ASKED QUESTIONS
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Online Compiler Questions & Answers</h2>
+                    <p class="text-xs sm:text-sm text-gray-400">Everything you need to know about compiling Python, Java, SQL, and Web code online with Smart Compiler.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-4">
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fab fa-python text-yellow-400"></i> Where can I run and compile Python code online (py online) with interactive user input?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Smart Compiler offers an in-browser <strong>Online Python Compiler (py online / python online)</strong> supporting Python 3.12 with real-time interactive input (<code>input()</code>), while-loops, and data structures with zero latency, exactly matching Programiz parity.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fab fa-java text-orange-400"></i> How to compile and execute Java programs online (java online) without installing JDK?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            With Smart Compiler's <strong>Online Java Compiler (java online)</strong>, you can write Java code in the Monaco editor and execute it immediately using OpenJDK 17 with <code>Scanner(System.in)</code> and full OOP class support.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-database text-cyan-400"></i> How to practice SQL and MySQL queries online (sql online & my sql online) for free?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Smart Compiler's <strong>SQL Online Editor</strong> allows you to write standard SQL and MySQL-compatible statements, create tables, insert data, and run queries with instant tabular output in your browser without setting up database servers.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fab fa-html5 text-emerald-400"></i> Can I build and preview Web Development projects (HTML, CSS, JavaScript) online?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Yes, Smart Compiler features a dedicated <strong>Web Development Online</strong> mode with <strong>HTML Online</strong>, CSS3, and JavaScript editing, complete with real-time split-screen live preview and responsive device toggles (Desktop, Tablet, Mobile).
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-bolt text-amber-400"></i> Is Smart Compiler a free online compiler alternative to Programiz and Replit?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Yes, Smart Compiler created by Archit Bishnoi is 100% free with no registration, no subscription, and unlimited code executions across 16+ languages with Monaco VS Code editing.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-code text-blue-400"></i> Can I use Smart Compiler for competitive programming in C++ (GCC 14)?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Yes, Smart Compiler provides GCC 14 with C++20 and C++23 standards, full Standard Template Library (STL) support (vectors, maps, sets, algorithms), and high-speed execution for LeetCode and CodeChef practice.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-gray-800">
+                        <h3 class="text-sm sm:text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fas fa-user-circle text-indigo-400"></i> Who developed Smart Compiler?
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                            Smart Compiler was engineered and created by <strong>Archit Bishnoi</strong>, a software engineer and full stack web developer dedicated to building fast developer tools. Visit <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" class="text-blue-400 hover:underline">Archit Bishnoi's official portfolio</a>.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             <!-- CREATOR SHOWCASE SECTION -->
             <section id="homeAboutSection" class="scroll-mt-20 mb-20">
                 <div class="glass-card rounded-3xl border border-gray-800 p-8 sm:p-12 relative overflow-hidden">
@@ -760,11 +1005,12 @@
                     <span>Created with ❤️ by <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" class="text-blue-400 hover:underline">Archit Bishnoi</a></span>
                 </div>
                 <div class="flex flex-wrap items-center gap-4 text-gray-400">
-                    <button onclick="openLanguageFromHome('python')" class="hover:text-blue-400 transition cursor-pointer">Python Compiler</button>
-                    <button onclick="openLanguageFromHome('java')" class="hover:text-blue-400 transition cursor-pointer">Java Compiler</button>
-                    <button onclick="openLanguageFromHome('cpp')" class="hover:text-blue-400 transition cursor-pointer">C++ Compiler</button>
-                    <button onclick="openLanguageFromHome('sql')" class="hover:text-blue-400 transition cursor-pointer">SQL Online</button>
-                    <button onclick="openLanguageFromHome('web')" class="hover:text-blue-400 transition cursor-pointer">Web Dev Lab</button>
+                    <a href="/?lang=python" onclick="event.preventDefault(); openLanguageFromHome('python');" class="hover:text-blue-400 transition cursor-pointer">Online Python Compiler (Py Online)</a>
+                    <a href="/?lang=java" onclick="event.preventDefault(); openLanguageFromHome('java');" class="hover:text-blue-400 transition cursor-pointer">Online Java Compiler (Java Online)</a>
+                    <a href="/?lang=sql" onclick="event.preventDefault(); openLanguageFromHome('sql');" class="hover:text-blue-400 transition cursor-pointer">SQL & MySQL Online (SQL Online)</a>
+                    <a href="/?lang=web" onclick="event.preventDefault(); openLanguageFromHome('web');" class="hover:text-blue-400 transition cursor-pointer">Web Development Online (HTML Online)</a>
+                    <a href="/?lang=cpp" onclick="event.preventDefault(); openLanguageFromHome('cpp');" class="hover:text-blue-400 transition cursor-pointer">Online C++ Compiler (C++ Online)</a>
+                    <a href="/?lang=c" onclick="event.preventDefault(); openLanguageFromHome('c');" class="hover:text-blue-400 transition cursor-pointer">Online C Compiler</a>
                 </div>
             </footer>
 

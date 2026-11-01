@@ -588,13 +588,13 @@ const LANG_ALIASES = {
 
 const SEO_TITLES = {
     'python': 'Online Python Compiler (Py Online & Python 3) | Smart Compiler',
-    'java': 'Online Java Compiler (Java Online & JDK 17) | Smart Compiler',
-    'sql': 'Online SQL & MySQL Compiler (SQL Online & SQLite) | Smart Compiler',
-    'web': 'Web Development Online - HTML, CSS & JavaScript Playground | Smart Compiler',
+    'java': 'Online Java Compiler (Java Online & OpenJDK 17) | Smart Compiler',
+    'sql': 'Online SQL & MySQL Compiler (SQL Online & MySQL Online) | Smart Compiler',
+    'web': 'Web Development Online - HTML, CSS & JavaScript Playground (HTML Online) | Smart Compiler',
     'cpp': 'Online C++ Compiler (C++ Online & GCC 14) | Smart Compiler',
     'c': 'Online C Compiler (C Online & GCC 14) | Smart Compiler',
     'javascript': 'Online JavaScript Compiler (JS Online & Node.js) | Smart Compiler',
-    'csharp': 'Online C# Compiler (C# Online .NET) | Smart Compiler',
+    'csharp': 'Online C# Compiler (C# Online & .NET) | Smart Compiler',
     'go': 'Online Go Compiler (Golang Online) | Smart Compiler',
     'rust': 'Online Rust Compiler (Rust Online) | Smart Compiler',
     'typescript': 'Online TypeScript Compiler (TS Online) | Smart Compiler',
@@ -603,6 +603,25 @@ const SEO_TITLES = {
     'kotlin': 'Online Kotlin Compiler (Kotlin Online & JVM) | Smart Compiler',
     'swift': 'Online Swift Compiler (Swift Online) | Smart Compiler',
     'bash': 'Online Bash & Shell Script Compiler | Smart Compiler'
+};
+
+const SEO_DESCRIPTIONS = {
+    'python': 'Run and compile Python 3 code online (py online & python online) with live interactive input(), while loops, and standard libraries. Zero installation, Programiz-grade terminal.',
+    'java': 'Compile and run Java code online (java online) with OpenJDK 17, Scanner stdin, OOP classes, and data structures. Free online Java compiler by Archit Bishnoi.',
+    'sql': 'Execute SQL and MySQL queries online (sql online & my sql online). Practice SELECT, INSERT, CREATE TABLE, JOINs, and aggregates with instant table output.',
+    'web': 'Real-time Web Development online playground (html online). Write HTML5, CSS3, and JavaScript with instant live split-screen preview and responsive viewport toggles.',
+    'cpp': 'High-performance online C++ compiler (c++ online) powered by GCC 14 with C++20/C++23 and STL support. Fast competitive programming sandbox.',
+    'c': 'Compile and run C programs online (c online) with GCC 14, interactive stdin, pointers, and memory management. Free in-browser C compiler.',
+    'javascript': 'Run JavaScript online (js online) with Node.js and browser modern ES6+ runtime. Instant console output and zero setup.',
+    'csharp': 'Online C# compiler (.NET) for compiling C# code, LINQ queries, and Object-Oriented design in your browser.',
+    'go': 'Run Golang code online with official Go compiler. Test goroutines, channels, structs, and packages online.',
+    'rust': 'Compile and test Rust code online with official rustc compiler, borrow checker, and memory safety guarantees.',
+    'typescript': 'Write and execute TypeScript online with instant type checking, interfaces, generics, and JavaScript compilation.',
+    'php': 'Run PHP scripts online with PHP 8.x interpreter. Test arrays, functions, strings, and backend logic in your browser.',
+    'ruby': 'Online Ruby compiler and interpreter. Run Ruby scripts, blocks, gems, and OOP code in real time.',
+    'kotlin': 'Compile and run Kotlin code online with JVM interoperability, null safety, and clean modern syntax.',
+    'swift': 'Compile Swift code online with Apple Swift compiler. Test algorithms, structs, protocols, and modern Swift features.',
+    'bash': 'Run Bash shell scripts and Linux terminal commands online with GNU Bash 5.0 in an isolated environment.'
 };
 
 function getLanguageFromURL() {
@@ -629,11 +648,39 @@ function updateURLParameter(langId) {
 
 function updateDynamicSEOTitle(langId) {
     const title = SEO_TITLES[langId] || `Online ${LANGUAGES[langId] ? LANGUAGES[langId].name : ''} Compiler | Smart Compiler`;
+    const desc = SEO_DESCRIPTIONS[langId] || `Free online compiler for ${LANGUAGES[langId] ? LANGUAGES[langId].name : 'code'}. Run code online with zero installation. Created by Archit Bishnoi.`;
+    const canonicalUrl = `https://smartcompiler-swart.vercel.app/?lang=${langId}`;
+
     document.title = title;
+
     try {
+        const metaTitle = document.querySelector('meta[name="title"]');
+        if (metaTitle) metaTitle.setAttribute('content', title);
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', desc);
+
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', title);
+
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', desc);
+
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+
+        const twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twTitle) twTitle.setAttribute('content', title);
+
+        const twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twDesc) twDesc.setAttribute('content', desc);
+
+        const twUrl = document.querySelector('meta[name="twitter:url"]');
+        if (twUrl) twUrl.setAttribute('content', canonicalUrl);
+
         const canonical = document.querySelector('link[rel="canonical"]');
         if (canonical) {
-            canonical.href = `https://smartcompiler-swart.vercel.app/?lang=${langId}`;
+            canonical.href = canonicalUrl;
         }
     } catch (e) {}
 }
@@ -705,22 +752,22 @@ user = <span class="text-cyan-300">input</span>(<span class="text-emerald-300">"
 };
 
 const HOME_LANG_DETAILS = {
-    python: { cat: ['popular', 'web'], desc: "Interactive loops, input() prompts, and math libraries with zero latency.", snippet: 'print(f"Hello, {input()}")' },
-    java: { cat: ['popular', 'mobile'], desc: "Full OOP classes, Scanner stdin, standard algorithms and cloud execution.", snippet: 'Scanner sc = new Scanner(System.in);' },
-    cpp: { cat: ['popular', 'systems'], desc: "Fast competitive programming, STL vectors, maps, and algorithms.", snippet: 'std::cout << "Fast C++" << std::endl;' },
-    sql: { cat: ['popular'], desc: "Relational database tables, SELECT queries, joins, and aggregates.", snippet: 'SELECT * FROM users;' },
-    web: { cat: ['popular', 'web'], desc: "Live browser sandbox with responsive desktop, tablet, and mobile previews.", snippet: '<div class="card">Hello</div>' },
-    c: { cat: ['popular', 'systems'], desc: "Pointers, memory management, low-level algorithms, and data structures.", snippet: 'printf("Smart Compiler\\n");' },
-    javascript: { cat: ['web'], desc: "Modern ECMAScript, async/await, arrays, objects, and console output.", snippet: 'console.log("Node 20");' },
-    csharp: { cat: ['systems'], desc: "Enterprise OOP architecture, LINQ expressions, and collections.", snippet: 'Console.WriteLine(".NET");' },
-    go: { cat: ['systems'], desc: "High-concurrency systems, goroutines, channels, and cloud microservices.", snippet: 'fmt.Println("Golang");' },
-    rust: { cat: ['systems'], desc: "Zero-cost abstractions, memory safety without GC, and concurrency.", snippet: 'println!("Fast & Safe");' },
-    typescript: { cat: ['web'], desc: "Type safety, interfaces, generics, and modern compile-to-JS.", snippet: 'const x: number = 42;' },
-    php: { cat: ['web'], desc: "Server-side scripting, array manipulation, and backend logic.", snippet: 'echo "PHP 8.3";' },
-    kotlin: { cat: ['mobile'], desc: "Modern expressive JVM language for Android and backend development.", snippet: 'fun main() = println()' },
-    swift: { cat: ['mobile'], desc: "Modern Apple ecosystem language for iOS, macOS, and systems apps.", snippet: 'print("Swift 5")' },
-    ruby: { cat: ['web'], desc: "Developer happiness, elegant object-oriented scripting, and logic.", snippet: 'puts "Hello Ruby"' },
-    bash: { cat: ['systems', 'web'], desc: "Linux command automation, pipes, variables, and shell scripts.", snippet: 'echo "Bash $USER"' }
+    python: { cat: ['popular', 'web'], desc: "Run Python online (py online) with live interactive input() prompts, loops, and math libraries with 0ms latency.", snippet: 'print(f"Hello, {input()}")' },
+    java: { cat: ['popular', 'mobile'], desc: "Compile Java code online (java online) with OpenJDK 17, Scanner stdin, OOP classes, and algorithm support.", snippet: 'Scanner sc = new Scanner(System.in);' },
+    cpp: { cat: ['popular', 'systems'], desc: "Fast C++ compiler online (c++ online) with GCC 14, STL vectors, maps, and competitive programming.", snippet: 'std::cout << "Fast C++" << std::endl;' },
+    sql: { cat: ['popular'], desc: "Practice SQL online and MySQL queries with instant table output for SELECT, INSERT, JOINs, and aggregates.", snippet: 'SELECT * FROM users;' },
+    web: { cat: ['popular', 'web'], desc: "Web development online playground (html online) with real-time HTML5, CSS3, JS preview and device frames.", snippet: '<div class="card">Hello</div>' },
+    c: { cat: ['popular', 'systems'], desc: "Online C compiler (c online) with GCC 14, interactive stdin, pointers, memory allocation, and data structures.", snippet: 'printf("Smart Compiler\\n");' },
+    javascript: { cat: ['web'], desc: "Online JavaScript compiler (js online) with Node.js and ES6+ runtime, async/await, and console logs.", snippet: 'console.log("Node 20");' },
+    csharp: { cat: ['systems'], desc: "Online C# compiler with .NET runtime, LINQ queries, enterprise OOP classes, and collections.", snippet: 'Console.WriteLine(".NET");' },
+    go: { cat: ['systems'], desc: "Online Go compiler (golang online) for concurrent goroutines, channels, and cloud microservices.", snippet: 'fmt.Println("Golang");' },
+    rust: { cat: ['systems'], desc: "Online Rust compiler with rustc, zero-cost abstractions, memory safety, and borrow checker.", snippet: 'println!("Fast & Safe");' },
+    typescript: { cat: ['web'], desc: "Online TypeScript compiler (ts online) with type safety, interfaces, generics, and instant JS compile.", snippet: 'const x: number = 42;' },
+    php: { cat: ['web'], desc: "Online PHP compiler with PHP 8.x interpreter for server scripts, array manipulation, and backend logic.", snippet: 'echo "PHP 8.3";' },
+    kotlin: { cat: ['mobile'], desc: "Online Kotlin compiler with JVM interoperability, null safety, and clean Android syntax.", snippet: 'fun main() = println()' },
+    swift: { cat: ['mobile'], desc: "Online Swift compiler with Apple Swift engine for iOS, macOS, algorithms, and protocols.", snippet: 'print("Swift 5")' },
+    ruby: { cat: ['web'], desc: "Online Ruby compiler with interactive scripting, blocks, gems, and OOP syntax.", snippet: 'puts "Hello Ruby"' },
+    bash: { cat: ['systems', 'web'], desc: "Online Bash compiler with GNU Bash 5.0 for Linux shell scripting, commands, and pipes.", snippet: 'echo "Bash $USER"' }
 };
 
 let currentHomeCategory = 'all';
@@ -772,7 +819,40 @@ function showHomeView(updateHistory = true) {
         } catch (e) {}
     }
 
-    document.title = 'Smart Compiler - Online Multi-Language Compiler & Cloud IDE | Created by Archit Bishnoi';
+    const homeTitle = 'Online Python Compiler (Py Online), Java Compiler, SQL Online & Web IDE | Smart Compiler';
+    const homeDesc = 'Free online compiler and cloud IDE for Python (py online & python online), Java (java online), SQL (sql online, my sql online), and Web Development (html online). Run code with live interactive stdin, 16+ runtimes, and Monaco editor. Zero install. Created by Archit Bishnoi.';
+    const homeUrl = 'https://smartcompiler-swart.vercel.app/';
+
+    document.title = homeTitle;
+
+    try {
+        const metaTitle = document.querySelector('meta[name="title"]');
+        if (metaTitle) metaTitle.setAttribute('content', homeTitle);
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', homeDesc);
+
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', homeTitle);
+
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', homeDesc);
+
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', homeUrl);
+
+        const twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twTitle) twTitle.setAttribute('content', homeTitle);
+
+        const twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twDesc) twDesc.setAttribute('content', homeDesc);
+
+        const twUrl = document.querySelector('meta[name="twitter:url"]');
+        if (twUrl) twUrl.setAttribute('content', homeUrl);
+
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.href = homeUrl;
+    } catch (e) {}
 }
 
 function showCompilerView(langId, updateHistory = true) {
@@ -899,10 +979,14 @@ function renderHomeLanguages(filter = currentHomeCategory, search = currentHomeS
 
     list.forEach(lang => {
         const detail = HOME_LANG_DETAILS[lang.id] || { cat: [], desc: 'High-performance cloud compiler runtime.', snippet: `Run ${lang.name}` };
-        const card = document.createElement('div');
-        card.className = 'glass-card tilt-card p-5 rounded-2xl flex flex-col justify-between group cursor-pointer border border-gray-800/80 hover:border-blue-500/50 transition-all';
+        const card = document.createElement('a');
+        card.href = `/?lang=${lang.id}`;
+        card.className = 'glass-card tilt-card p-5 rounded-2xl flex flex-col justify-between group cursor-pointer border border-gray-800/80 hover:border-blue-500/50 transition-all text-left no-underline block';
         card.setAttribute('data-tilt', 'true');
-        card.onclick = () => openLanguageFromHome(lang.id);
+        card.onclick = (e) => {
+            e.preventDefault();
+            openLanguageFromHome(lang.id);
+        };
         card.innerHTML = `
             <div class="card-glare"></div>
             <div>

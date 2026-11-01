@@ -11,7 +11,7 @@
         <priority>1.0</priority>
     </url>
 
-    <!-- Online Python Compiler (Py Online) -->
+    <!-- Online Python Compiler (Py Online & Python 3) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=python</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -19,7 +19,7 @@
         <priority>0.95</priority>
     </url>
 
-    <!-- Online Java Compiler (Java Online) -->
+    <!-- Online Java Compiler (Java Online & OpenJDK 17) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=java</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -27,15 +27,15 @@
         <priority>0.95</priority>
     </url>
 
-    <!-- SQL & MySQL Online Compiler (SQL Online) -->
+    <!-- SQL & MySQL Online Compiler (SQL Online & MySQL Sandbox) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=sql</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.90</priority>
+        <priority>0.95</priority>
     </url>
 
-    <!-- Web Development Online (HTML Online Playground) -->
+    <!-- Web Development Online (HTML Online, CSS3 & JavaScript Playground) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=web</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -43,15 +43,15 @@
         <priority>0.90</priority>
     </url>
 
-    <!-- Online C++ Compiler (C++ Online) -->
+    <!-- Online C++ Compiler (C++ Online & GCC 14) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=cpp</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
         <changefreq>daily</changefreq>
-        <priority>0.85</priority>
+        <priority>0.90</priority>
     </url>
 
-    <!-- Online C Compiler (C Online) -->
+    <!-- Online C Compiler (C Online & GCC 14) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=c</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -59,7 +59,7 @@
         <priority>0.85</priority>
     </url>
 
-    <!-- Online JavaScript Compiler (Node.js & In-Browser) -->
+    <!-- Online JavaScript Compiler (JS Online & Node.js) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=javascript</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -75,7 +75,7 @@
         <priority>0.80</priority>
     </url>
 
-    <!-- Online Go Compiler (Golang) -->
+    <!-- Online Go Compiler (Golang Online) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=go</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -83,7 +83,7 @@
         <priority>0.80</priority>
     </url>
 
-    <!-- Online Rust Compiler -->
+    <!-- Online Rust Compiler (Rust Online) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=rust</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -91,7 +91,7 @@
         <priority>0.80</priority>
     </url>
 
-    <!-- Online TypeScript Compiler -->
+    <!-- Online TypeScript Compiler (TS Online) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=typescript</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
@@ -99,11 +99,43 @@
         <priority>0.80</priority>
     </url>
 
-    <!-- Online PHP Compiler -->
+    <!-- Online PHP Compiler (PHP Online) -->
     <url>
         <loc>https://smartcompiler-swart.vercel.app/?lang=php</loc>
         <lastmod>2026-11-02T00:00:00+00:00</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.75</priority>
+    </url>
+
+    <!-- Online Ruby Compiler (Ruby Online) -->
+    <url>
+        <loc>https://smartcompiler-swart.vercel.app/?lang=ruby</loc>
+        <lastmod>2026-11-02T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.75</priority>
+    </url>
+
+    <!-- Online Kotlin Compiler (Kotlin Online & JVM) -->
+    <url>
+        <loc>https://smartcompiler-swart.vercel.app/?lang=kotlin</loc>
+        <lastmod>2026-11-02T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.75</priority>
+    </url>
+
+    <!-- Online Swift Compiler (Swift Online) -->
+    <url>
+        <loc>https://smartcompiler-swart.vercel.app/?lang=swift</loc>
+        <lastmod>2026-11-02T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.75</priority>
+    </url>
+
+    <!-- Online Bash & Shell Script Compiler -->
+    <url>
+        <loc>https://smartcompiler-swart.vercel.app/?lang=bash</loc>
+        <lastmod>2026-11-02T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.70</priority>
     </url>
 </urlset>
