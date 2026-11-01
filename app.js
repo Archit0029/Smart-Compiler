@@ -638,7 +638,491 @@ function updateDynamicSEOTitle(langId) {
     } catch (e) {}
 }
 
-// 3. INITIALIZATION
+// ==========================================
+// 3. HOME PAGE 3D ENGINE & VIEW ROUTING
+// ==========================================
+
+let currentView = 'home'; // 'home' | 'compiler'
+let activeMockupLang = 'python';
+
+const HERO_MOCKUP_SNIPPETS = {
+    python: {
+        filename: 'main.py',
+        code: `<span class="text-purple-400">def</span> <span class="text-blue-400">solve</span>(name, score):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;greeting = <span class="text-emerald-300">f"Welcome, {name}!"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> { <span class="text-amber-300">"status"</span>: <span class="text-emerald-300">"PRO"</span>, <span class="text-amber-300">"score"</span>: score * 2 }<br>
+<br>
+user = <span class="text-cyan-300">input</span>(<span class="text-emerald-300">"Enter username: "</span>)<br>
+<span class="text-cyan-300">print</span>(solve(user, 100))`,
+        output: `<div class="text-gray-500 text-[10px] flex items-center justify-between pb-1 border-b border-gray-800/50">
+    <span><i class="fas fa-terminal text-emerald-400 mr-1"></i> Interactive Console</span>
+    <span class="text-emerald-400">● Live 0ms</span>
+</div>
+<div class="text-gray-200">Enter username: <span class="text-cyan-400 font-semibold">Archit</span></div>
+<div class="text-emerald-400">{'status': 'PRO', 'score': 200}</div>`
+    },
+    java: {
+        filename: 'Main.java',
+        code: `<span class="text-purple-400">import</span> java.util.Scanner;<br>
+<span class="text-purple-400">public class</span> <span class="text-blue-400">Main</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">public static void</span> <span class="text-blue-400">main</span>(String[] args) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Scanner sc = <span class="text-purple-400">new</span> Scanner(System.in);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="text-emerald-300">"Smart Compiler Java Ready!"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+        output: `<div class="text-gray-500 text-[10px] flex items-center justify-between pb-1 border-b border-gray-800/50">
+    <span><i class="fas fa-terminal text-emerald-400 mr-1"></i> OpenJDK 17 Console</span>
+    <span class="text-emerald-400">● Compiled in 0.8s</span>
+</div>
+<div class="text-emerald-400">Smart Compiler Java Ready!</div>`
+    },
+    cpp: {
+        filename: 'main.cpp',
+        code: `<span class="text-purple-400">#include</span> <span class="text-emerald-300">&lt;iostream&gt;</span><br>
+<span class="text-purple-400">#include</span> <span class="text-emerald-300">&lt;vector&gt;</span><br>
+<span class="text-purple-400">int</span> <span class="text-blue-400">main</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;std::vector&lt;<span class="text-purple-400">int</span>&gt; v = {10, 20, 30};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;std::cout &lt;&lt; <span class="text-emerald-300">"C++20 Vector Size: "</span> &lt;&lt; v.size() &lt;&lt; std::endl;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> <span class="text-amber-300">0</span>;<br>
+}`,
+        output: `<div class="text-gray-500 text-[10px] flex items-center justify-between pb-1 border-b border-gray-800/50">
+    <span><i class="fas fa-terminal text-emerald-400 mr-1"></i> GCC 14 Console</span>
+    <span class="text-emerald-400">● Compiled in 0.4s</span>
+</div>
+<div class="text-emerald-400">C++20 Vector Size: 3</div>`
+    },
+    sql: {
+        filename: 'query.sql',
+        code: `<span class="text-purple-400">CREATE TABLE</span> developers (id <span class="text-purple-400">INT</span>, name <span class="text-purple-400">TEXT</span>);<br>
+<span class="text-purple-400">INSERT INTO</span> developers <span class="text-purple-400">VALUES</span> (<span class="text-amber-300">1</span>, <span class="text-emerald-300">'Archit'</span>);<br>
+<span class="text-purple-400">SELECT</span> * <span class="text-purple-400">FROM</span> developers;`,
+        output: `<div class="text-gray-500 text-[10px] flex items-center justify-between pb-1 border-b border-gray-800/50">
+    <span><i class="fas fa-database text-cyan-400 mr-1"></i> SQLite / MySQL Result</span>
+    <span class="text-cyan-400">● 1 row returned</span>
+</div>
+<div class="text-cyan-300">| id: 1 | name: Archit |</div>`
+    }
+};
+
+const HOME_LANG_DETAILS = {
+    python: { cat: ['popular', 'web'], desc: "Interactive loops, input() prompts, and math libraries with zero latency.", snippet: 'print(f"Hello, {input()}")' },
+    java: { cat: ['popular', 'mobile'], desc: "Full OOP classes, Scanner stdin, standard algorithms and cloud execution.", snippet: 'Scanner sc = new Scanner(System.in);' },
+    cpp: { cat: ['popular', 'systems'], desc: "Fast competitive programming, STL vectors, maps, and algorithms.", snippet: 'std::cout << "Fast C++" << std::endl;' },
+    sql: { cat: ['popular'], desc: "Relational database tables, SELECT queries, joins, and aggregates.", snippet: 'SELECT * FROM users;' },
+    web: { cat: ['popular', 'web'], desc: "Live browser sandbox with responsive desktop, tablet, and mobile previews.", snippet: '<div class="card">Hello</div>' },
+    c: { cat: ['popular', 'systems'], desc: "Pointers, memory management, low-level algorithms, and data structures.", snippet: 'printf("Smart Compiler\\n");' },
+    javascript: { cat: ['web'], desc: "Modern ECMAScript, async/await, arrays, objects, and console output.", snippet: 'console.log("Node 20");' },
+    csharp: { cat: ['systems'], desc: "Enterprise OOP architecture, LINQ expressions, and collections.", snippet: 'Console.WriteLine(".NET");' },
+    go: { cat: ['systems'], desc: "High-concurrency systems, goroutines, channels, and cloud microservices.", snippet: 'fmt.Println("Golang");' },
+    rust: { cat: ['systems'], desc: "Zero-cost abstractions, memory safety without GC, and concurrency.", snippet: 'println!("Fast & Safe");' },
+    typescript: { cat: ['web'], desc: "Type safety, interfaces, generics, and modern compile-to-JS.", snippet: 'const x: number = 42;' },
+    php: { cat: ['web'], desc: "Server-side scripting, array manipulation, and backend logic.", snippet: 'echo "PHP 8.3";' },
+    kotlin: { cat: ['mobile'], desc: "Modern expressive JVM language for Android and backend development.", snippet: 'fun main() = println()' },
+    swift: { cat: ['mobile'], desc: "Modern Apple ecosystem language for iOS, macOS, and systems apps.", snippet: 'print("Swift 5")' },
+    ruby: { cat: ['web'], desc: "Developer happiness, elegant object-oriented scripting, and logic.", snippet: 'puts "Hello Ruby"' },
+    bash: { cat: ['systems', 'web'], desc: "Linux command automation, pipes, variables, and shell scripts.", snippet: 'echo "Bash $USER"' }
+};
+
+let currentHomeCategory = 'all';
+let currentHomeSearch = '';
+
+function showHomeView(updateHistory = true) {
+    currentView = 'home';
+    const homeView = document.getElementById('homeView');
+    const workspace = document.getElementById('workspace');
+    const ideFooter = document.querySelector('footer:not(#homeView footer)');
+    const homeHeaderControls = document.getElementById('homeHeaderControls');
+    const ideHeaderControls = document.getElementById('ideHeaderControls');
+    const navHomeBtn = document.getElementById('navHomeBtn');
+    const navCompilerBtn = document.getElementById('navCompilerBtn');
+
+    if (homeView) homeView.classList.remove('hidden');
+    if (workspace) {
+        workspace.classList.add('hidden');
+        workspace.classList.remove('flex');
+    }
+    if (ideFooter) ideFooter.classList.add('hidden');
+    if (homeHeaderControls) homeHeaderControls.classList.remove('hidden');
+    if (ideHeaderControls) ideHeaderControls.classList.add('hidden');
+
+    if (navHomeBtn) {
+        navHomeBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer';
+    }
+    if (navCompilerBtn) {
+        navCompilerBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer';
+    }
+
+    document.body.classList.remove('h-screen', 'overflow-hidden');
+    document.body.classList.add('min-h-screen', 'overflow-y-auto');
+
+    if (updateHistory) {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('lang');
+            url.searchParams.delete('language');
+            window.history.pushState({ view: 'home' }, '', url.pathname);
+        } catch (e) {}
+    }
+
+    document.title = 'Smart Compiler - Online Multi-Language Compiler & Cloud IDE | Created by Archit Bishnoi';
+}
+
+function showCompilerView(langId, updateHistory = true) {
+    currentView = 'compiler';
+    const homeView = document.getElementById('homeView');
+    const workspace = document.getElementById('workspace');
+    const ideFooter = document.querySelector('footer:not(#homeView footer)');
+    const homeHeaderControls = document.getElementById('homeHeaderControls');
+    const ideHeaderControls = document.getElementById('ideHeaderControls');
+    const navHomeBtn = document.getElementById('navHomeBtn');
+    const navCompilerBtn = document.getElementById('navCompilerBtn');
+
+    if (homeView) homeView.classList.add('hidden');
+    if (workspace) {
+        workspace.classList.remove('hidden');
+        workspace.classList.add('flex');
+    }
+    if (ideFooter) ideFooter.classList.remove('hidden');
+    if (homeHeaderControls) homeHeaderControls.classList.add('hidden');
+    if (ideHeaderControls) {
+        ideHeaderControls.classList.remove('hidden');
+        ideHeaderControls.classList.add('flex');
+    }
+
+    if (navHomeBtn) {
+        navHomeBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer';
+    }
+    if (navCompilerBtn) {
+        navCompilerBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer';
+    }
+
+    document.body.classList.remove('min-h-screen', 'overflow-y-auto');
+    document.body.classList.add('h-screen', 'overflow-hidden');
+
+    const targetLang = langId || currentLang || 'python';
+    if (LANGUAGES[targetLang]) {
+        currentLang = targetLang;
+        loadLanguage(targetLang);
+        renderQuickLangPills();
+        renderSampleDropdown();
+        if (updateHistory) {
+            updateURLParameter(targetLang);
+        }
+        updateDynamicSEOTitle(targetLang);
+    }
+
+    if (monacoEditor) {
+        setTimeout(() => monacoEditor.layout(), 60);
+    }
+}
+
+function navigateToHome() {
+    showHomeView(true);
+}
+
+function navigateToCompiler(langId) {
+    showCompilerView(langId || currentLang || 'python', true);
+}
+
+function openLanguageFromHome(langId) {
+    showCompilerView(langId, true);
+}
+
+function scrollToLanguages() {
+    const el = document.getElementById('homeLangsSection');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function setHeroMockupTab(langId) {
+    activeMockupLang = langId;
+    const item = HERO_MOCKUP_SNIPPETS[langId];
+    if (!item) return;
+
+    ['python', 'java', 'cpp', 'sql'].forEach(id => {
+        const btn = document.getElementById(`heroTab-${id}`);
+        if (btn) {
+            if (id === langId) {
+                btn.className = 'px-2 py-0.5 rounded bg-blue-600 text-white font-semibold transition cursor-pointer';
+            } else {
+                btn.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white transition cursor-pointer';
+            }
+        }
+    });
+
+    const fileEl = document.getElementById('heroMockupFilename');
+    if (fileEl) fileEl.textContent = item.filename;
+
+    const codeEl = document.getElementById('heroMockupCode');
+    if (codeEl) codeEl.innerHTML = item.code;
+
+    const outEl = document.getElementById('heroMockupOutput');
+    if (outEl) outEl.innerHTML = item.output;
+}
+
+function launchCurrentMockupLang() {
+    openLanguageFromHome(activeMockupLang);
+}
+
+function openCreatorModal() {
+    const m = document.getElementById('creatorModal');
+    if (m) m.classList.remove('hidden');
+}
+
+function renderHomeLanguages(filter = currentHomeCategory, search = currentHomeSearch) {
+    const grid = document.getElementById('homeLanguagesGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const list = Object.values(LANGUAGES).filter(lang => {
+        const detail = HOME_LANG_DETAILS[lang.id] || { cat: ['all'], desc: '', snippet: '' };
+        const matchesCategory = filter === 'all' || (detail.cat && detail.cat.includes(filter));
+        const matchesSearch = !search || 
+            lang.name.toLowerCase().includes(search.toLowerCase()) || 
+            lang.label.toLowerCase().includes(search.toLowerCase()) ||
+            lang.id.toLowerCase().includes(search.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
+
+    if (list.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-xs">No languages found matching "${search}". Try searching for Python, Java, C++, or SQL!</div>`;
+        return;
+    }
+
+    list.forEach(lang => {
+        const detail = HOME_LANG_DETAILS[lang.id] || { cat: [], desc: 'High-performance cloud compiler runtime.', snippet: `Run ${lang.name}` };
+        const card = document.createElement('div');
+        card.className = 'glass-card tilt-card p-5 rounded-2xl flex flex-col justify-between group cursor-pointer border border-gray-800/80 hover:border-blue-500/50 transition-all';
+        card.setAttribute('data-tilt', 'true');
+        card.onclick = () => openLanguageFromHome(lang.id);
+        card.innerHTML = `
+            <div class="card-glare"></div>
+            <div>
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gray-900 border border-gray-700/80 flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform translate-z-20">
+                        <i class="${lang.icon}"></i>
+                    </div>
+                    <span class="px-2.5 py-1 text-[10px] font-mono rounded-lg bg-gray-800/90 text-gray-300 border border-gray-700/70 group-hover:border-blue-500/40 transition">
+                        ${lang.label}
+                    </span>
+                </div>
+                <h3 class="text-base font-bold text-white group-hover:text-blue-400 transition mb-1 flex items-center gap-1.5">
+                    ${lang.name}
+                    ${lang.id === 'python' ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Live Stdin</span>' : ''}
+                </h3>
+                <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                    ${detail.desc}
+                </p>
+            </div>
+            <div>
+                <div class="bg-gray-950/70 border border-gray-800 rounded-lg px-2.5 py-1.5 mb-3 font-mono text-[10px] text-gray-400 flex items-center justify-between">
+                    <span class="truncate text-blue-300/80 font-mono">${detail.snippet}</span>
+                    <i class="fas fa-play text-[8px] text-gray-500"></i>
+                </div>
+                <button type="button" class="w-full py-2 px-3 bg-gray-800/80 group-hover:bg-blue-600 text-gray-300 group-hover:text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition shadow-sm pointer-events-none">
+                    <span>Open ${lang.name}</span>
+                    <i class="fas fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    init3DTiltCards();
+}
+
+function filterHomeLanguages(category) {
+    currentHomeCategory = category;
+    ['all', 'popular', 'systems', 'web', 'mobile'].forEach(cat => {
+        const btn = document.getElementById(`homeFilter-${cat}`);
+        if (btn) {
+            if (cat === category) {
+                btn.className = 'px-3 py-1.5 rounded-lg font-semibold bg-blue-600 text-white transition cursor-pointer';
+            } else {
+                btn.className = 'px-3 py-1.5 rounded-lg font-semibold text-gray-400 hover:text-white transition cursor-pointer';
+            }
+        }
+    });
+    renderHomeLanguages(category, currentHomeSearch);
+}
+
+function handleHomeLangSearch(term) {
+    currentHomeSearch = term;
+    renderHomeLanguages(currentHomeCategory, term);
+}
+
+// 3D Canvas Constellation & Particle Field
+function init3DCanvas() {
+    const canvas = document.getElementById('hero3dCanvas');
+    if (!canvas || !canvas.parentElement) return;
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    let animationFrameId;
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+    function resize() {
+        if (!canvas.parentElement) return;
+        width = canvas.width = canvas.parentElement.clientWidth;
+        height = canvas.height = Math.min(canvas.parentElement.clientHeight || 750, 750);
+        initParticles();
+    }
+
+    const tokens = ['{ }', '</>', 'def', 'class', 'fn', 'import', 'let', '=>', 'SELECT', 'cout'];
+    const colors = ['#38bdf8', '#818cf8', '#34d399', '#f472b6', '#fbbf24'];
+
+    function initParticles() {
+        particles = [];
+        const count = Math.min(Math.floor(width / 20), 70);
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: (Math.random() - 0.5) * width * 1.2,
+                y: (Math.random() - 0.5) * height * 1.2,
+                z: Math.random() * 800 - 400,
+                size: Math.random() * 2 + 1.2,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                token: Math.random() > 0.65 ? tokens[Math.floor(Math.random() * tokens.length)] : null,
+                vx: (Math.random() - 0.5) * 0.35,
+                vy: (Math.random() - 0.5) * 0.35,
+                vz: (Math.random() - 0.5) * 0.35
+            });
+        }
+    }
+
+    window.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            mouse.targetX = (e.clientX - rect.left - width / 2) * 0.0006;
+            mouse.targetY = (e.clientY - rect.top - height / 2) * 0.0006;
+        }
+    });
+
+    let rotX = 0, rotY = 0;
+
+    function render() {
+        if (document.hidden) {
+            animationFrameId = requestAnimationFrame(render);
+            return;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        mouse.x += (mouse.targetX - mouse.x) * 0.05;
+        mouse.y += (mouse.targetY - mouse.y) * 0.05;
+        rotY += 0.0012 + mouse.x;
+        rotX = mouse.y;
+
+        const fov = 420;
+        const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+
+        const projected = [];
+
+        for (let p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.z += p.vz;
+
+            if (p.x < -width) p.x = width;
+            if (p.x > width) p.x = -width;
+            if (p.y < -height) p.y = height;
+            if (p.y > height) p.y = -height;
+            if (p.z < -400) p.z = 400;
+            if (p.z > 400) p.z = -400;
+
+            let x1 = p.x * cosY - p.z * sinY;
+            let z1 = p.z * cosY + p.x * sinY;
+            let y1 = p.y * cosX - z1 * sinX;
+            let z2 = z1 * cosX + p.y * sinX + 500;
+
+            if (z2 > 50) {
+                const scale = fov / z2;
+                const projX = x1 * scale + width / 2;
+                const projY = y1 * scale + height / 2;
+                const alpha = Math.min(Math.max((z2 - 50) / 700, 0.1), 0.85);
+
+                projected.push({
+                    x: projX,
+                    y: projY,
+                    scale: scale,
+                    alpha: alpha,
+                    color: p.color,
+                    token: p.token,
+                    size: p.size * scale
+                });
+            }
+        }
+
+        ctx.lineWidth = 0.6;
+        for (let i = 0; i < projected.length; i++) {
+            for (let j = i + 1; j < projected.length; j++) {
+                const dx = projected[i].x - projected[j].x;
+                const dy = projected[i].y - projected[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                    const lineAlpha = (1 - dist / 100) * 0.22 * projected[i].alpha;
+                    ctx.strokeStyle = `rgba(99, 102, 241, ${lineAlpha})`;
+                    ctx.beginPath();
+                    ctx.moveTo(projected[i].x, projected[i].y);
+                    ctx.lineTo(projected[j].x, projected[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        for (let p of projected) {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            if (p.token && p.scale > 0.8) {
+                ctx.font = `${Math.floor(10 * p.scale)}px "JetBrains Mono", monospace`;
+                ctx.fillText(p.token, p.x, p.y);
+            } else {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, Math.max(p.size, 1.2), 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        ctx.globalAlpha = 1.0;
+
+        animationFrameId = requestAnimationFrame(render);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    render();
+}
+
+// 3D Tilt Card Interactive Handler
+function init3DTiltCards() {
+    const cards = document.querySelectorAll('.tilt-card');
+    cards.forEach(card => {
+        if (card.dataset.tiltInitialized) return;
+        card.dataset.tiltInitialized = 'true';
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.03, 1.03, 1.03)`;
+
+            const glare = card.querySelector('.card-glare');
+            if (glare) {
+                glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.12), transparent 60%)`;
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    });
+}
+
+// ==========================================
+// 4. INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initUI();
@@ -648,30 +1132,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initUI() {
-    // If URL contains ?lang=xxx, initialize directly into that language
-    const urlLang = getLanguageFromURL();
-    if (urlLang && LANGUAGES[urlLang]) {
-        currentLang = urlLang;
-    }
-
     renderQuickLangPills();
     renderAllLanguagesGrid();
     renderSampleDropdown();
-    loadLanguage(currentLang);
-    updateURLParameter(currentLang);
-    updateDynamicSEOTitle(currentLang);
+    renderHomeLanguages();
+    init3DCanvas();
+    init3DTiltCards();
+
+    // If URL contains ?lang=xxx, open directly into compiler mode!
+    // Otherwise open the Home page!
+    const urlLang = getLanguageFromURL();
+    if (urlLang && LANGUAGES[urlLang]) {
+        showCompilerView(urlLang, false);
+    } else {
+        showHomeView(false);
+    }
 
     // Support browser back/forward buttons (popstate)
     window.addEventListener('popstate', () => {
         const l = getLanguageFromURL();
-        if (l && l !== currentLang && LANGUAGES[l]) {
-            currentLang = l;
-            loadLanguage(l);
-            renderQuickLangPills();
-            renderSampleDropdown();
-            const searchInput = document.getElementById('langSearchInput');
-            renderAllLanguagesGrid(searchInput ? searchInput.value : '');
-            updateDynamicSEOTitle(l);
+        if (l && LANGUAGES[l]) {
+            showCompilerView(l, false);
+        } else {
+            showHomeView(false);
         }
     });
 
@@ -684,16 +1167,22 @@ function initUI() {
 // Render top quick pills
 function renderQuickLangPills() {
     const container = document.getElementById('quickLangContainer');
+    if (!container) return;
     container.innerHTML = '';
 
     Object.values(LANGUAGES).filter(l => l.pills).forEach(lang => {
         const btn = document.createElement('button');
         btn.id = `pill-${lang.id}`;
-        btn.className = `px-3 py-1 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition whitespace-nowrap ${
+        btn.className = `px-3 py-1 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition whitespace-nowrap cursor-pointer ${
             lang.id === currentLang ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
         }`;
         btn.innerHTML = `<i class="${lang.icon}"></i> <span>${lang.name}</span>`;
-        btn.onclick = () => switchLanguage(lang.id);
+        btn.onclick = () => {
+            switchLanguage(lang.id);
+            if (currentView === 'home') {
+                showCompilerView(lang.id, true);
+            }
+        };
         container.appendChild(btn);
     });
 }
@@ -701,6 +1190,7 @@ function renderQuickLangPills() {
 // Render languages grid in modal
 function renderAllLanguagesGrid(filter = '') {
     const grid = document.getElementById('allLanguagesGrid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     const list = Object.values(LANGUAGES).filter(l => 
@@ -735,6 +1225,9 @@ function renderAllLanguagesGrid(filter = '') {
         card.onclick = () => {
             switchLanguage(lang.id);
             closeLanguageModal();
+            if (currentView === 'home') {
+                showCompilerView(lang.id, true);
+            }
         };
         grid.appendChild(card);
     });
@@ -743,6 +1236,7 @@ function renderAllLanguagesGrid(filter = '') {
 // Render samples dropdown
 function renderSampleDropdown() {
     const dropdown = document.getElementById('sampleDropdown');
+    if (!dropdown) return;
     const lang = LANGUAGES[currentLang];
     dropdown.innerHTML = '';
 
@@ -750,7 +1244,7 @@ function renderSampleDropdown() {
 
     Object.keys(lang.samples).forEach(key => {
         const item = document.createElement('button');
-        item.className = 'w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white capitalize transition';
+        item.className = 'w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white capitalize transition cursor-pointer';
         item.innerHTML = `<i class="fas fa-code-branch text-blue-400 text-[10px]"></i> Example: ${key}`;
         item.onclick = () => {
             loadSample(key);
@@ -760,190 +1254,6 @@ function renderSampleDropdown() {
     });
 }
 
-// ==========================================
-// 4. MONACO EDITOR SETUP (WITH TIMEOUT FAILSAFE)
-// ==========================================
-let monacoLoadTimeout = null;
-
-function initMonaco() {
-    const loading = document.getElementById('editorLoading');
-
-    // Failsafe: If Monaco takes longer than 1200ms, immediately show the fast editor!
-    monacoLoadTimeout = setTimeout(() => {
-        if (!monacoEditor) {
-            console.log("Monaco CDN taking time — activating responsive fallback editor");
-            showFallbackTextarea();
-        }
-    }, 1200);
-
-    // If require is missing from CDN, fall back immediately
-    if (typeof require === 'undefined') {
-        clearTimeout(monacoLoadTimeout);
-        showFallbackTextarea();
-        return;
-    }
-
-    // Configure cross-origin worker proxy so Chrome won't block Monaco workers
-    window.MonacoEnvironment = {
-        getWorkerUrl: function(workerId, label) {
-            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                self.MonacoEnvironment = { baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/' };
-                importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');
-            `)}`;
-        }
-    };
-
-    try {
-        require.config({
-            paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' },
-            'vs/nls': { availableLanguages: { '*': '' } }
-        });
-
-        require(['vs/editor/editor.main'], () => {
-            clearTimeout(monacoLoadTimeout);
-
-            try {
-                const container = document.getElementById('monaco-container');
-                const loadingEl = document.getElementById('editorLoading');
-
-                // If fallback textarea was already active, preserve any edits made
-                const fallback = document.getElementById('fallback-code-area');
-                const initialCode = (fallback && !fallback.classList.contains('hidden') && fallback.value)
-                    ? fallback.value
-                    : (getSavedCode(currentLang) || LANGUAGES[currentLang].samples.hello);
-
-                if (fallback) fallback.classList.add('hidden');
-
-                monacoEditor = monaco.editor.create(container, {
-                    value: initialCode,
-                    language: LANGUAGES[currentLang].monacoLang,
-                    theme: settings.theme,
-                    fontSize: settings.fontSize,
-                    tabSize: settings.tabSize,
-                    fontFamily: '"JetBrains Mono", Consolas, "Courier New", monospace',
-                    automaticLayout: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                    smoothScrolling: true,
-                    cursorBlinking: 'smooth',
-                    wordWrap: 'on',
-                    padding: { top: 12, bottom: 12 },
-                    renderLineHighlight: 'all',
-                });
-
-                if (loadingEl) loadingEl.style.display = 'none';
-
-                monacoEditor.onDidChangeCursorPosition(e => {
-                    document.getElementById('cursorPos').textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
-                });
-
-                monacoEditor.onDidChangeModelContent(() => {
-                    const code = monacoEditor.getValue();
-                    saveCode(currentLang, code);
-                    const saveEl = document.getElementById('saveStatus');
-                    saveEl.textContent = 'Saving...';
-                    setTimeout(() => { saveEl.textContent = 'Saved'; }, 400);
-                });
-
-                monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-                    runCode();
-                });
-            } catch (createErr) {
-                console.warn("Monaco editor creation failed, using fallback:", createErr);
-                showFallbackTextarea();
-            }
-        }, (err) => {
-            clearTimeout(monacoLoadTimeout);
-            console.warn("Monaco failed to load from CDN. Using fallback textarea.", err);
-            showFallbackTextarea();
-        });
-    } catch (e) {
-        clearTimeout(monacoLoadTimeout);
-        showFallbackTextarea();
-    }
-}
-
-function showFallbackTextarea() {
-    if (monacoLoadTimeout) clearTimeout(monacoLoadTimeout);
-
-    const loading = document.getElementById('editorLoading');
-    if (loading) loading.style.display = 'none';
-
-    const fallback = document.getElementById('fallback-code-area');
-    if (!fallback) return;
-
-    fallback.classList.remove('hidden');
-    fallback.style.display = 'block';
-
-    const currentCode = getSavedCode(currentLang) || LANGUAGES[currentLang].samples.hello;
-    if (!fallback.value) {
-        fallback.value = currentCode;
-    }
-
-    // Support Tab indentation and Ctrl+Enter inside fallback textarea
-    if (!fallback.dataset.initialized) {
-        fallback.dataset.initialized = 'true';
-
-        fallback.addEventListener('input', () => {
-            saveCode(currentLang, fallback.value);
-            const saveEl = document.getElementById('saveStatus');
-            if (saveEl) {
-                saveEl.textContent = 'Saving...';
-                setTimeout(() => { saveEl.textContent = 'Saved'; }, 400);
-            }
-        });
-
-        fallback.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = fallback.selectionStart;
-                const end = fallback.selectionEnd;
-                fallback.value = fallback.value.substring(0, start) + '    ' + fallback.value.substring(end);
-                fallback.selectionStart = fallback.selectionEnd = start + 4;
-                saveCode(currentLang, fallback.value);
-            } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                runCode();
-            }
-        });
-
-        // Track cursor in fallback textarea
-        const updateFallbackCursor = () => {
-            const text = fallback.value.substring(0, fallback.selectionStart);
-            const lines = text.split('\n');
-            const lineNum = lines.length;
-            const colNum = lines[lines.length - 1].length + 1;
-            const cursorEl = document.getElementById('cursorPos');
-            if (cursorEl) cursorEl.textContent = `Ln ${lineNum}, Col ${colNum}`;
-        };
-
-        fallback.addEventListener('keyup', updateFallbackCursor);
-        fallback.addEventListener('click', updateFallbackCursor);
-    }
-}
-
-function getEditorCode() {
-    if (monacoEditor) {
-        return monacoEditor.getValue();
-    }
-    return document.getElementById('fallback-code-area').value;
-}
-
-function setEditorCode(code, monacoLang) {
-    if (monacoEditor) {
-        monacoEditor.setValue(code);
-        if (monacoLang) {
-            monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
-        }
-    } else {
-        const fallback = document.getElementById('fallback-code-area');
-        fallback.value = code;
-    }
-}
-
-// ==========================================
-// 5. LANGUAGE SWITCHING & TEMPLATES
-// ==========================================
 function switchLanguage(langId) {
     if (!LANGUAGES[langId]) return;
     currentLang = langId;
@@ -954,6 +1264,11 @@ function switchLanguage(langId) {
     renderAllLanguagesGrid(searchInput ? searchInput.value : '');
     updateURLParameter(langId);
     updateDynamicSEOTitle(langId);
+
+    if (currentView === 'home') {
+        showCompilerView(langId, true);
+    }
+
     showToast(`Switched to ${LANGUAGES[langId].name}`);
 }
 

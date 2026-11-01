@@ -332,101 +332,452 @@
     </main>
 
     <!-- TOP NAVIGATION BAR -->
-    <header class="bg-gray-900 border-b border-gray-800 px-4 py-2.5 flex items-center justify-between gap-3 shrink-0 z-20">
+    <header id="mainHeader" class="bg-gray-900 border-b border-gray-800 px-4 py-2.5 flex items-center justify-between gap-3 shrink-0 z-30 sticky top-0">
         <!-- Brand, Logo & Creator Badge -->
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-bold text-lg">
-                <i class="fas fa-terminal text-sm"></i>
-            </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="font-bold text-white text-base tracking-tight">Smart Compiler</span>
-                    <span class="px-1.5 py-0.5 text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded">PRO</span>
+            <button onclick="navigateToHome()" class="flex items-center gap-3 text-left focus:outline-none group cursor-pointer" title="Return to Smart Compiler Home">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-bold text-lg group-hover:scale-105 transition">
+                    <i class="fas fa-terminal text-sm"></i>
                 </div>
-                <div class="flex items-center gap-1.5 text-[11px] text-gray-400">
-                    <span class="hidden sm:inline">Created by</span>
-                    <button id="aboutCreatorBtn" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 hover:underline transition" title="Click to view creator profile">
-                        <i class="fas fa-check-circle text-[10px] text-emerald-400"></i> Archit Bishnoi
-                    </button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-white text-base tracking-tight group-hover:text-blue-300 transition">Smart Compiler</span>
+                        <span class="px-1.5 py-0.5 text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded">PRO</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] text-gray-400">
+                        <span class="hidden sm:inline">Created by</span>
+                        <button type="button" onclick="event.stopPropagation(); openCreatorModal();" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 hover:underline cursor-pointer">
+                            <i class="fas fa-check-circle text-[10px] text-emerald-400"></i> Archit Bishnoi
+                        </button>
+                    </div>
                 </div>
+            </button>
+
+            <!-- Nav View Mode Switchers -->
+            <div class="hidden sm:flex items-center bg-gray-800/80 p-0.5 rounded-lg border border-gray-700/60 ml-2">
+                <button id="navHomeBtn" onclick="navigateToHome()" class="px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer">
+                    <i class="fas fa-home text-xs"></i> <span>Home</span>
+                </button>
+                <button id="navCompilerBtn" onclick="navigateToCompiler()" class="px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer">
+                    <i class="fas fa-code text-cyan-400 text-xs"></i> <span>Editor</span>
+                </button>
             </div>
         </div>
 
-        <!-- Quick Language Pills -->
+        <!-- Quick Language Pills (Available in Compiler & Home) -->
         <div class="hidden md:flex items-center bg-gray-800/80 p-1 rounded-xl border border-gray-700/60 overflow-x-auto max-w-[40vw] scrollbar-none" id="quickLangContainer">
             <!-- Dynamic language buttons inserted by app.js -->
         </div>
 
-        <!-- Right Action Controls -->
+        <!-- Right Action Controls (Adaptive: Home vs Compiler) -->
         <div class="flex items-center gap-2">
-            <!-- Language Selector Dropdown (Mobile + All Languages) -->
-            <div class="relative">
-                <button id="langModalBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition">
-                    <i id="currentLangIcon" class="fab fa-python text-yellow-400"></i>
-                    <span id="currentLangLabel">Python 3</span>
-                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+            <!-- Controls for Home Mode -->
+            <div id="homeHeaderControls" class="flex items-center gap-2">
+                <button id="aboutCreatorBtn" onclick="openCreatorModal()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition cursor-pointer">
+                    <i class="fas fa-user-circle text-blue-400"></i>
+                    <span>Creator</span>
+                </button>
+                <button onclick="navigateToCompiler('python')" class="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-blue-500/20 transition cursor-pointer">
+                    <i class="fas fa-play text-xs text-yellow-300"></i>
+                    <span>Launch Compiler</span>
                 </button>
             </div>
 
-            <!-- Templates Dropdown -->
-            <div class="relative hidden sm:block">
-                <button id="sampleModalBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 transition" title="Load pre-built examples">
-                    <i class="fas fa-lightbulb text-amber-400"></i>
-                    <span>Examples</span>
-                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
-                </button>
-                <div id="sampleDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1 z-50 text-xs">
-                    <!-- Populated dynamically -->
+            <!-- Controls for Compiler Mode -->
+            <div id="ideHeaderControls" class="hidden items-center gap-2">
+                <!-- Language Selector Dropdown (Mobile + All Languages) -->
+                <div class="relative">
+                    <button id="langModalBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition cursor-pointer">
+                        <i id="currentLangIcon" class="fab fa-python text-yellow-400"></i>
+                        <span id="currentLangLabel">Python 3</span>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                    </button>
                 </div>
-            </div>
 
-            <!-- RUN BUTTON -->
-            <button id="runBtn" class="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-emerald-500/20 transition-all">
-                <i class="fas fa-play text-xs" id="runIcon"></i>
-                <span id="runText">Run</span>
-                <kbd class="hidden xl:inline text-[10px] bg-black/30 px-1.5 py-0.5 rounded font-mono text-green-200">Ctrl+Enter</kbd>
-            </button>
+                <!-- Templates Dropdown -->
+                <div class="relative hidden sm:block">
+                    <button id="sampleModalBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 transition cursor-pointer" title="Load pre-built examples">
+                        <i class="fas fa-lightbulb text-amber-400"></i>
+                        <span>Examples</span>
+                        <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                    </button>
+                    <div id="sampleDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1 z-50 text-xs">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
 
-            <!-- More Options Dropdown -->
-            <div class="relative">
-                <button id="moreMenuBtn" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition" title="More Actions">
-                    <i class="fas fa-ellipsis-v text-sm"></i>
+                <!-- RUN BUTTON -->
+                <button id="runBtn" class="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-emerald-500/20 transition-all cursor-pointer">
+                    <i class="fas fa-play text-xs" id="runIcon"></i>
+                    <span id="runText">Run</span>
+                    <kbd class="hidden xl:inline text-[10px] bg-black/30 px-1.5 py-0.5 rounded font-mono text-green-200">Ctrl+Enter</kbd>
                 </button>
-                <div id="moreDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1.5 z-50 text-xs">
-                    <button id="formatBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
-                        <i class="fas fa-align-left text-blue-400 w-4"></i> Format Code
+
+                <!-- More Options Dropdown -->
+                <div class="relative">
+                    <button id="moreMenuBtn" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition cursor-pointer" title="More Actions">
+                        <i class="fas fa-ellipsis-v text-sm"></i>
                     </button>
-                    <button id="copyBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
-                        <i class="fas fa-copy text-green-400 w-4"></i> Copy Code
-                    </button>
-                    <button id="downloadBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
-                        <i class="fas fa-download text-purple-400 w-4"></i> Download File
-                    </button>
-                    <label class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
-                        <i class="fas fa-upload text-amber-400 w-4"></i> Upload File
-                        <input type="file" id="uploadInput" class="hidden">
-                    </label>
-                    <div class="border-t border-gray-800 my-1"></div>
-                    <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-blue-400 hover:text-blue-300">
-                        <i class="fas fa-globe text-blue-400 w-4"></i> Visit Archit's Portfolio
-                    </a>
-                    <button id="aboutCreatorMenuBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
-                        <i class="fas fa-user-circle text-gray-400 w-4"></i> About Archit Bishnoi
-                    </button>
-                    <button id="resetCodeBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-red-400">
-                        <i class="fas fa-undo text-red-400 w-4"></i> Reset to Default
-                    </button>
-                    <div class="border-t border-gray-800 my-1"></div>
-                    <button id="settingsBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
-                        <i class="fas fa-cog text-gray-400 w-4"></i> Settings
-                    </button>
+                    <div id="moreDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                        <button id="formatBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                            <i class="fas fa-align-left text-blue-400 w-4"></i> Format Code
+                        </button>
+                        <button id="copyBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                            <i class="fas fa-copy text-green-400 w-4"></i> Copy Code
+                        </button>
+                        <button id="downloadBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                            <i class="fas fa-download text-purple-400 w-4"></i> Download File
+                        </button>
+                        <label class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                            <i class="fas fa-upload text-amber-400 w-4"></i> Upload File
+                            <input type="file" id="uploadInput" class="hidden">
+                        </label>
+                        <div class="border-t border-gray-800 my-1"></div>
+                        <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-blue-400 hover:text-blue-300">
+                            <i class="fas fa-globe text-blue-400 w-4"></i> Visit Archit's Portfolio
+                        </a>
+                        <button id="aboutCreatorMenuBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                            <i class="fas fa-user-circle text-gray-400 w-4"></i> About Archit Bishnoi
+                        </button>
+                        <button id="resetCodeBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-red-400">
+                            <i class="fas fa-undo text-red-400 w-4"></i> Reset to Default
+                        </button>
+                        <div class="border-t border-gray-800 my-1"></div>
+                        <button id="settingsBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                            <i class="fas fa-cog text-gray-400 w-4"></i> Settings
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- ============================================== -->
+    <!-- VIEW 1: HOME LANDING PAGE (3D UI/UX & LANGUAGE SELECTOR) -->
+    <!-- ============================================== -->
+    <div id="homeView" class="w-full flex-1 overflow-y-auto overflow-x-hidden relative bg-[#090d16] text-gray-200">
+        <!-- 3D INTERACTIVE HERO CANVAS -->
+        <canvas id="hero3dCanvas" class="absolute inset-0 w-full h-[750px] pointer-events-none z-0 opacity-80"></canvas>
+
+        <!-- Glowing Background Ambient Orbs -->
+        <div class="glow-orb w-[500px] h-[500px] -top-32 -left-32 bg-blue-600/20"></div>
+        <div class="glow-orb w-[450px] h-[450px] top-48 -right-32 bg-cyan-500/15"></div>
+        <div class="glow-orb w-[600px] h-[600px] top-[900px] left-1/4 bg-indigo-600/15"></div>
+        <div class="glow-orb w-[400px] h-[400px] top-[1800px] right-10 bg-purple-600/15"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 relative z-10">
+
+            <!-- HERO SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center mb-16 sm:mb-24">
+                
+                <!-- Hero Left (Headlines & CTAs) -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold backdrop-blur-md shadow-lg shadow-blue-500/10 animate-float-3d">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span>Next-Gen Online Compiler & Cloud IDE • v2.5 PRO</span>
+                    </div>
+
+                    <!-- Main Heading -->
+                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        Write, Run & Debug Code in <br class="hidden sm:inline">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300">16+ Languages</span> with 3D Speed
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                        Experience zero-installation coding directly in your browser. Features <strong>live interactive stdin</strong> (Programiz-grade), Monaco VS Code editor, instant Python 3 runtime, OpenJDK 17, GCC 14, SQL databases, and responsive Web Dev lab.
+                    </p>
+
+                    <!-- CTA Action Buttons -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+                        <button onclick="openLanguageFromHome('python')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+                            <i class="fab fa-python text-lg text-yellow-300"></i>
+                            <span>Start Coding Python 3 (Free)</span>
+                        </button>
+                        <button onclick="scrollToLanguages()" class="px-5 py-3.5 rounded-xl bg-gray-800/90 hover:bg-gray-700/90 text-gray-200 border border-gray-700/80 font-semibold text-xs sm:text-sm flex items-center gap-2 transition backdrop-blur-md hover:border-blue-500/50 cursor-pointer">
+                            <i class="fas fa-layer-group text-blue-400"></i>
+                            <span>Explore 16+ Languages</span>
+                        </button>
+                        <button onclick="openLanguageFromHome('web')" class="px-4 py-3.5 rounded-xl bg-gray-800/60 hover:bg-gray-700/80 text-orange-400 border border-orange-500/20 font-semibold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer">
+                            <i class="fab fa-html5 text-orange-500"></i>
+                            <span>Web Dev Lab</span>
+                        </button>
+                    </div>
+
+                    <!-- Trust Points -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4 text-xs text-gray-400 font-mono">
+                        <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-400 text-xs"></i> 100% Free Forever</span>
+                        <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-400 text-xs"></i> No Sign-Up Needed</span>
+                        <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-400 text-xs"></i> Zero Installation</span>
+                        <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-400 text-xs"></i> Programiz Stdin Parity</span>
+                    </div>
+                </div>
+
+                <!-- Hero Right (Interactive 3D Perspective IDE Mockup) -->
+                <div class="lg:col-span-5 relative perspective-1200 flex justify-center">
+                    <div class="hero-mockup-3d glass-panel rounded-2xl border border-gray-700/70 p-4 sm:p-5 relative overflow-hidden text-xs w-full max-w-lg shadow-2xl">
+                        <!-- Window Controls & Header Tabs -->
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-800 text-[11px]">
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                                </div>
+                                <span class="text-gray-400 font-mono ml-2 font-medium" id="heroMockupFilename">main.py</span>
+                            </div>
+                            <div class="flex items-center gap-1 bg-gray-800/80 p-0.5 rounded-lg border border-gray-700/60 font-mono text-[10px]">
+                                <button onclick="setHeroMockupTab('python')" id="heroTab-python" class="px-2 py-0.5 rounded bg-blue-600 text-white font-semibold transition cursor-pointer">Python</button>
+                                <button onclick="setHeroMockupTab('java')" id="heroTab-java" class="px-2 py-0.5 rounded text-gray-400 hover:text-white transition cursor-pointer">Java</button>
+                                <button onclick="setHeroMockupTab('cpp')" id="heroTab-cpp" class="px-2 py-0.5 rounded text-gray-400 hover:text-white transition cursor-pointer">C++</button>
+                                <button onclick="setHeroMockupTab('sql')" id="heroTab-sql" class="px-2 py-0.5 rounded text-gray-400 hover:text-white transition cursor-pointer">SQL</button>
+                            </div>
+                        </div>
+
+                        <!-- Mockup Code Display -->
+                        <div class="bg-gray-950/80 rounded-xl p-3.5 border border-gray-800/80 font-mono text-[11px] leading-relaxed mb-3 overflow-hidden" id="heroMockupCode">
+                            <span class="text-purple-400">def</span> <span class="text-blue-400">solve</span>(name, score):<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;greeting = <span class="text-emerald-300">f"Welcome, {name}!"</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> { <span class="text-amber-300">"status"</span>: <span class="text-emerald-300">"PRO"</span>, <span class="text-amber-300">"score"</span>: score * 2 }<br>
+                            <br>
+                            user = <span class="text-cyan-300">input</span>(<span class="text-emerald-300">"Enter username: "</span>)<br>
+                            <span class="text-cyan-300">print</span>(solve(user, 100))
+                        </div>
+
+                        <!-- Mockup Simulated Output Terminal -->
+                        <div class="bg-[#090d16] rounded-xl p-3 border border-gray-800/80 font-mono text-[11px] text-gray-300 mb-3 space-y-1" id="heroMockupOutput">
+                            <div class="text-gray-500 text-[10px] flex items-center justify-between pb-1 border-b border-gray-800/50">
+                                <span><i class="fas fa-terminal text-emerald-400 mr-1"></i> Interactive Console</span>
+                                <span class="text-emerald-400">● Live 0ms</span>
+                            </div>
+                            <div class="text-gray-200">Enter username: <span class="text-cyan-400 font-semibold">Archit</span></div>
+                            <div class="text-emerald-400">{'status': 'PRO', 'score': 200}</div>
+                        </div>
+
+                        <!-- Launch from Mockup CTA -->
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center gap-2 text-[10px] text-gray-400">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>Skulpt Client Engine Ready</span>
+                            </div>
+                            <button onclick="launchCurrentMockupLang()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition cursor-pointer">
+                                <span>Launch in Editor</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- STATS BAR (3D GLASS CARDS) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+                <div class="glass-card tilt-card p-5 rounded-2xl flex flex-col items-center text-center">
+                    <div class="card-glare"></div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-lg mb-2">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">16+</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Compilers & Interpreters</p>
+                </div>
+
+                <div class="glass-card tilt-card p-5 rounded-2xl flex flex-col items-center text-center">
+                    <div class="card-glare"></div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg mb-2">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">0ms</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Stdin Prompt Latency</p>
+                </div>
+
+                <div class="glass-card tilt-card p-5 rounded-2xl flex flex-col items-center text-center">
+                    <div class="card-glare"></div>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg mb-2">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Monaco</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">VS Code-Grade Engine</p>
+                </div>
+
+                <div class="glass-card tilt-card p-5 rounded-2xl flex flex-col items-center text-center">
+                    <div class="card-glare"></div>
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg mb-2">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">100% Free</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Unlimited Cloud IDE</p>
+                </div>
+            </div>
+
+            <!-- LANGUAGE SELECTOR HUB (THE CORE REQUEST) -->
+            <section id="homeLangsSection" class="scroll-mt-20 mb-24">
+                <div class="text-center max-w-3xl mx-auto mb-10 space-y-3">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                        <i class="fas fa-th-large text-cyan-400"></i> MULTI-LANGUAGE COMPILER HUB
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Select a Programming Language to Compile</h2>
+                    <p class="text-xs sm:text-sm text-gray-400">Click any language card to jump straight into its compiler environment with pre-loaded boilerplate templates, auto-complete, and zero-setup execution.</p>
+                </div>
+
+                <!-- Category Filters & Search Controls -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+                    <!-- Filter Pills -->
+                    <div class="flex flex-wrap items-center justify-center gap-1.5 bg-gray-900/80 p-1.5 rounded-xl border border-gray-800 text-xs">
+                        <button onclick="filterHomeLanguages('all')" id="homeFilter-all" class="px-3 py-1.5 rounded-lg font-semibold bg-blue-600 text-white transition cursor-pointer">All (16)</button>
+                        <button onclick="filterHomeLanguages('popular')" id="homeFilter-popular" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 hover:text-white transition cursor-pointer">🔥 Popular (6)</button>
+                        <button onclick="filterHomeLanguages('systems')" id="homeFilter-systems" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 hover:text-white transition cursor-pointer">⚡ Systems & Cloud</button>
+                        <button onclick="filterHomeLanguages('web')" id="homeFilter-web" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 hover:text-white transition cursor-pointer">🌐 Web & Scripting</button>
+                        <button onclick="filterHomeLanguages('mobile')" id="homeFilter-mobile" class="px-3 py-1.5 rounded-lg font-semibold text-gray-400 hover:text-white transition cursor-pointer">📱 Mobile & OOP</button>
+                    </div>
+
+                    <!-- Instant Search Bar -->
+                    <div class="relative w-full sm:w-72">
+                        <i class="fas fa-search absolute left-3.5 top-3 text-gray-500 text-xs"></i>
+                        <input type="text" id="homeLangSearchInput" oninput="handleHomeLangSearch(this.value)" placeholder="Search language (e.g. Python, Java, SQL)..." class="w-full bg-gray-900 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition">
+                    </div>
+                </div>
+
+                <!-- 16 Interactive 3D Tilt Language Cards Grid -->
+                <div id="homeLanguagesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                    <!-- Dynamically populated by app.js with 3D tilt effects, icons, badges & direct CTAs -->
+                </div>
+            </section>
+
+            <!-- FEATURE HIGHLIGHTS MATRIX -->
+            <section id="homeFeaturesSection" class="scroll-mt-20 mb-24">
+                <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold">
+                        <i class="fas fa-rocket text-indigo-400"></i> HIGH-PERFORMANCE FEATURES
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Engineered for Developers & Students</h2>
+                    <p class="text-xs sm:text-sm text-gray-400">Designed to give you the speed of a native desktop IDE with zero installations required.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Live Interactive Stdin (Terminal)</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Unlike standard online compilers that require pre-feeding all inputs upfront, Smart Compiler provides true inline stdin prompt parity with Programiz. Type answers in real time inside loops and conditional menus.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Skulpt Python 3 & Judge0 Cloud</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Hybrid architecture combines client-side Skulpt Python 3.12 for zero latency with Judge0 high-concurrency cloud sandboxes for compiled languages like C++, Java, Rust, and Go.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Monaco VS Code Core</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Powered by Microsoft's Monaco Editor — the same engine inside Visual Studio Code. Includes bracket matching, multi-cursor editing, keyboard shortcuts, code folding, and auto-indentation.</p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 text-xl">
+                            <i class="fab fa-html5"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Sandboxed Web Dev Playground</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Dedicated frontend development environment supporting HTML5, CSS3, and JavaScript with instant live preview. Toggle between Desktop, Tablet, and Mobile viewport frames.</p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Dynamic URL Routing & SEO</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Deep-link to any language with instant URL updates (e.g. <code>/?lang=python</code>, <code>/?lang=java</code>). Share direct code environments with students, classmates, and teammates effortlessly.</p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="glass-card tilt-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="card-glare"></div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Zero Setup, 100% Free</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">No npm installs, no compilers to download, no Docker containers to spin up, and no account registrations required. Open the website and start compiling your code immediately.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CREATOR SHOWCASE SECTION -->
+            <section id="homeAboutSection" class="scroll-mt-20 mb-20">
+                <div class="glass-card rounded-3xl border border-gray-800 p-8 sm:p-12 relative overflow-hidden">
+                    <div class="glow-orb w-72 h-72 -top-10 -right-10 bg-blue-600/20"></div>
+                    
+                    <div class="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                        <div class="w-28 h-28 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-1 shadow-2xl shadow-blue-500/30 flex items-center justify-center shrink-0">
+                            <div class="w-full h-full bg-gray-950 rounded-xl flex items-center justify-center font-bold text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 to-cyan-300">
+                                AB
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 text-center lg:text-left flex-1">
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                                <h3 class="text-2xl font-extrabold text-white">Archit Bishnoi</h3>
+                                <span class="px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold flex items-center gap-1">
+                                    <i class="fas fa-check-circle text-emerald-400 text-[10px]"></i> Creator & Software Engineer
+                                </span>
+                            </div>
+
+                            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed max-w-2xl">
+                                Hi! I'm <strong>Archit Bishnoi</strong>, a software engineer and full stack web developer passionate about building ultra-fast cloud tools, online compilers, and modern developer infrastructure. I designed and engineered <strong>Smart Compiler</strong> to help students and developers write and test code instantly across 16+ runtimes with zero barrier to entry.
+                            </p>
+
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                                <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/30 transition">
+                                    <i class="fas fa-globe"></i> Visit Official Portfolio
+                                </a>
+                                <a href="https://github.com/Archit0029" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 border border-gray-700 transition">
+                                    <i class="fab fa-github"></i> GitHub Profile
+                                </a>
+                                <button onclick="copyShareLink()" class="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-gray-700 transition cursor-pointer">
+                                    <i class="fas fa-share-alt"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HOME PAGE FOOTER -->
+            <footer class="pt-10 pb-8 border-t border-gray-800/80 text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-gray-300">Smart Compiler PRO</span>
+                    <span>&copy; 2026</span>
+                    <span>&bull;</span>
+                    <span>Created with ❤️ by <a href="https://architbishnoi-portfolio.vercel.app/" target="_blank" class="text-blue-400 hover:underline">Archit Bishnoi</a></span>
+                </div>
+                <div class="flex flex-wrap items-center gap-4 text-gray-400">
+                    <button onclick="openLanguageFromHome('python')" class="hover:text-blue-400 transition cursor-pointer">Python Compiler</button>
+                    <button onclick="openLanguageFromHome('java')" class="hover:text-blue-400 transition cursor-pointer">Java Compiler</button>
+                    <button onclick="openLanguageFromHome('cpp')" class="hover:text-blue-400 transition cursor-pointer">C++ Compiler</button>
+                    <button onclick="openLanguageFromHome('sql')" class="hover:text-blue-400 transition cursor-pointer">SQL Online</button>
+                    <button onclick="openLanguageFromHome('web')" class="hover:text-blue-400 transition cursor-pointer">Web Dev Lab</button>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
     <!-- MAIN WORKSPACE -->
-    <main class="flex-1 flex flex-col lg:flex-row h-full overflow-hidden relative" id="workspace">
+    <main class="hidden flex-1 flex flex-col lg:flex-row h-full overflow-hidden relative" id="workspace">
 
         <!-- ============================================== -->
         <!-- MODE 1: GENERAL CODE COMPILER (Python, C, C++, Java, etc.) -->

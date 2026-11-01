@@ -333,3 +333,163 @@ body {
     resize: none;
     tab-size: 4;
 }
+
+
+/* ============================================
+   3D UI / UX & HOME PAGE LANDING STYLES
+   ============================================ */
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.perspective-1500 {
+    perspective: 1500px;
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.translate-z-10 {
+    transform: translateZ(10px);
+}
+
+.translate-z-20 {
+    transform: translateZ(20px);
+}
+
+.translate-z-30 {
+    transform: translateZ(30px);
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+    background: rgba(18, 24, 38, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+    background: rgba(22, 27, 34, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    border-color: rgba(59, 130, 246, 0.45);
+    box-shadow: 0 15px 35px -10px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.12);
+}
+
+/* 3D Tilt Card Base */
+.tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease;
+    will-change: transform;
+}
+
+/* Glowing Background Orbs */
+.glow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Hero 3D Mockup */
+.hero-mockup-3d {
+    transform: perspective(1200px) rotateY(-7deg) rotateX(5deg);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    box-shadow: 0 25px 60px -15px rgba(59, 130, 246, 0.35), 0 0 35px rgba(99, 102, 241, 0.15);
+}
+
+.hero-mockup-3d:hover {
+    transform: perspective(1200px) rotateY(-1deg) rotateX(1deg) scale3d(1.02, 1.02, 1.02);
+    box-shadow: 0 35px 80px -15px rgba(59, 130, 246, 0.5), 0 0 45px rgba(99, 102, 241, 0.25);
+}
+
+/* Floating Animations */
+@keyframes float3d {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0.5deg);
+    }
+}
+
+.animate-float-3d {
+    animation: float3d 6s ease-in-out infinite;
+}
+
+@keyframes pulseBorder {
+    0%, 100% {
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    50% {
+        border-color: rgba(147, 51, 234, 0.6);
+    }
+}
+
+.pulse-border-glow {
+    animation: pulseBorder 4s infinite;
+}
+
+/* 3D Gradient Text */
+.gradient-text-3d {
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.gradient-blue-3d {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.gradient-cyan-3d {
+    background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 50%, #0891b2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Interactive Card Spotlight Glare */
+.card-glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tilt-card:hover .card-glare {
+    opacity: 1;
+}
+
+/* Home Page Scrollbar */
+#homeView::-webkit-scrollbar {
+    width: 10px;
+}
+#homeView::-webkit-scrollbar-track {
+    background: #090d16;
+}
+#homeView::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 5px;
+}
+#homeView::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
