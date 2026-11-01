@@ -353,19 +353,14 @@
                 </div>
             </button>
 
-            <!-- Nav View Mode Switchers -->
-            <div class="hidden sm:flex items-center bg-gray-800/80 p-0.5 rounded-lg border border-gray-700/60 ml-2">
-                <button id="navHomeBtn" onclick="navigateToHome()" class="px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer">
-                    <i class="fas fa-home text-xs"></i> <span>Home</span>
-                </button>
-                <button id="navCompilerBtn" onclick="navigateToCompiler()" class="px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer">
-                    <i class="fas fa-code text-cyan-400 text-xs"></i> <span>Editor</span>
-                </button>
-            </div>
+            <!-- Back to Home Button (Visible in Compiler, Hidden on Home Screen) -->
+            <button id="navBackHomeBtn" onclick="navigateToHome()" class="hidden items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800/90 hover:bg-gray-700 text-gray-200 hover:text-white border border-gray-700/80 ml-2 transition cursor-pointer" title="Return to Home Page">
+                <i class="fas fa-arrow-left text-blue-400 text-xs"></i> <span>Home</span>
+            </button>
         </div>
 
-        <!-- Quick Language Pills (Available in Compiler & Home) -->
-        <div class="hidden md:flex items-center bg-gray-800/80 p-1 rounded-xl border border-gray-700/60 overflow-x-auto max-w-[40vw] scrollbar-none" id="quickLangContainer">
+        <!-- Quick Language Pills (ONLY visible in Compiler view, HIDDEN on Home screen) -->
+        <div class="hidden items-center bg-gray-800/80 p-1 rounded-xl border border-gray-700/60 overflow-x-auto max-w-[40vw] scrollbar-none" id="quickLangContainer">
             <!-- Dynamic language buttons inserted by app.js -->
         </div>
 
@@ -377,9 +372,9 @@
                     <i class="fas fa-user-circle text-blue-400"></i>
                     <span>Creator</span>
                 </button>
-                <button onclick="navigateToCompiler('python')" class="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-blue-500/20 transition cursor-pointer">
+                <button onclick="openLanguageFromHome('python')" class="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-blue-500/20 transition cursor-pointer">
                     <i class="fas fa-play text-xs text-yellow-300"></i>
-                    <span>Launch Compiler</span>
+                    <span>Start Coding</span>
                 </button>
             </div>
 

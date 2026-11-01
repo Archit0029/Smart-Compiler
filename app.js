@@ -623,7 +623,7 @@ function updateURLParameter(langId) {
     try {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', langId);
-        window.history.replaceState({ lang: langId }, '', url.pathname + url.search);
+        window.history.pushState({ lang: langId, view: 'compiler' }, '', url.pathname + url.search);
     } catch (e) {}
 }
 
@@ -733,8 +733,8 @@ function showHomeView(updateHistory = true) {
     const ideFooter = document.querySelector('footer:not(#homeView footer)');
     const homeHeaderControls = document.getElementById('homeHeaderControls');
     const ideHeaderControls = document.getElementById('ideHeaderControls');
-    const navHomeBtn = document.getElementById('navHomeBtn');
-    const navCompilerBtn = document.getElementById('navCompilerBtn');
+    const quickLangContainer = document.getElementById('quickLangContainer');
+    const navBackHomeBtn = document.getElementById('navBackHomeBtn');
 
     if (homeView) homeView.classList.remove('hidden');
     if (workspace) {
@@ -743,13 +743,21 @@ function showHomeView(updateHistory = true) {
     }
     if (ideFooter) ideFooter.classList.add('hidden');
     if (homeHeaderControls) homeHeaderControls.classList.remove('hidden');
-    if (ideHeaderControls) ideHeaderControls.classList.add('hidden');
-
-    if (navHomeBtn) {
-        navHomeBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer';
+    if (ideHeaderControls) {
+        ideHeaderControls.classList.add('hidden');
+        ideHeaderControls.classList.remove('flex');
     }
-    if (navCompilerBtn) {
-        navCompilerBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer';
+
+    // Completely remove/hide top quick language select menu from Home screen
+    if (quickLangContainer) {
+        quickLangContainer.classList.add('hidden');
+        quickLangContainer.classList.remove('md:flex');
+    }
+
+    // Hide Back to Home button on Home screen
+    if (navBackHomeBtn) {
+        navBackHomeBtn.classList.add('hidden');
+        navBackHomeBtn.classList.remove('flex');
     }
 
     document.body.classList.remove('h-screen', 'overflow-hidden');
@@ -774,8 +782,8 @@ function showCompilerView(langId, updateHistory = true) {
     const ideFooter = document.querySelector('footer:not(#homeView footer)');
     const homeHeaderControls = document.getElementById('homeHeaderControls');
     const ideHeaderControls = document.getElementById('ideHeaderControls');
-    const navHomeBtn = document.getElementById('navHomeBtn');
-    const navCompilerBtn = document.getElementById('navCompilerBtn');
+    const quickLangContainer = document.getElementById('quickLangContainer');
+    const navBackHomeBtn = document.getElementById('navBackHomeBtn');
 
     if (homeView) homeView.classList.add('hidden');
     if (workspace) {
@@ -789,17 +797,22 @@ function showCompilerView(langId, updateHistory = true) {
         ideHeaderControls.classList.add('flex');
     }
 
-    if (navHomeBtn) {
-        navHomeBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-gray-400 hover:text-white cursor-pointer';
+    // Show top quick language select menu in Compiler editor view
+    if (quickLangContainer) {
+        quickLangContainer.classList.remove('hidden');
+        quickLangContainer.classList.add('md:flex');
     }
-    if (navCompilerBtn) {
-        navCompilerBtn.className = 'px-2.5 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition text-white bg-blue-600 shadow-sm cursor-pointer';
+
+    // Show Back to Home button in Compiler editor view
+    if (navBackHomeBtn) {
+        navBackHomeBtn.classList.remove('hidden');
+        navBackHomeBtn.classList.add('flex');
     }
 
     document.body.classList.remove('min-h-screen', 'overflow-y-auto');
     document.body.classList.add('h-screen', 'overflow-hidden');
 
-    const targetLang = langId || currentLang || 'python';
+    const targetLang = langId || 'python';
     if (LANGUAGES[targetLang]) {
         currentLang = targetLang;
         loadLanguage(targetLang);
@@ -821,11 +834,12 @@ function navigateToHome() {
 }
 
 function navigateToCompiler(langId) {
-    showCompilerView(langId || currentLang || 'python', true);
+    openLanguageFromHome(langId || 'python');
 }
 
 function openLanguageFromHome(langId) {
-    showCompilerView(langId, true);
+    const target = langId || 'python';
+    showCompilerView(target, true);
 }
 
 function scrollToLanguages() {
