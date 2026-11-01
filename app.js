@@ -973,70 +973,172 @@ function saveSettings() {
 // 6. CODE EXECUTION ENGINE — INTERACTIVE INLINE TERMINAL
 // ==========================================
 
-function extractPrompts(code, langId) {
-    const prompts = [];
+function cleanCodeForAnalysis(code, langId) {
+    const lines = code.split('\n');
+    const cleaned = [];
+    let inBlockComment = false;
+    let inDocstring = false;
+    let docDelim = '';
 
-    if (langId === 'python') {
-        const re = /input\s*\(\s*(?:[fFrRbB]*(['"`])([\s\S]*?)\1)?\s*\)/g;
-        let m;
-        while ((m = re.exec(code)) !== null) {
-            prompts.push(m[2] !== undefined ? m[2] : 'Enter input: ');
-        }
-    } else if (langId === 'cpp' || langId === 'c') {
-        const lines = code.split('\n');
-        for (let i = 0; i < lines.length; i++) {
-            const ln = lines[i].trim();
-            const promptMatch = ln.match(/cout\s*<<\s*["'](.*?)["']/) || ln.match(/printf\s*\(\s*["'](.*?)["']/);
-            if (promptMatch) {
-                for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
-                    if (/cin\s*>>|scanf\s*\(|getline\s*\(/.test(lines[j])) {
-                        prompts.push(promptMatch[1]);
-                        break;
-                    }
-                }
-            } else if (/cin\s*>>|scanf\s*\(/.test(ln)) {
-                prompts.push('Enter input: ');
+    for (let line of lines) {
+        let trimmed = line.trim();
+
+        if (['python', 'ruby', 'bash'].includes(langId)) {
+            if (inDocstring) {
+                if (trimmed.includes(docDelim)) inDocstring = false;
+                continue;
             }
-        }
-    } else if (langId === 'java') {
-        const lines = code.split('\n');
-        for (let i = 0; i < lines.length; i++) {
-            const ln = lines[i].trim();
-            const printMatch = ln.match(/System\.out\.prints?\s*\(\s*["'](.*?)["']/);
-            if (printMatch) {
-                for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
-                    if (/\.next|\.readLine/.test(lines[j])) {
-                        prompts.push(printMatch[1]);
-                        break;
-                    }
-                }
-            } else if (/Scanner|System\.in/.test(ln) && /\.next/.test(ln)) {
-                prompts.push('Enter input: ');
+            if (trimmed.startsWith('"""') || trimmed.startsWith("'''")) {
+                docDelim = trimmed.substring(0, 3);
+                if (trimmed.length > 3 && trimmed.slice(3).includes(docDelim)) continue;
+                inDocstring = true;
+                continue;
             }
+            if (trimmed.startsWith('#')) continue;
+
+            let s = '';
+            let inQ = false, qChar = '';
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if ((ch === '"' || ch === "'") && (i === 0 || line[i-1] !== '\\')) {
+                    if (!inQ) { inQ = true; qChar = ch; }
+                    else if (qChar === ch) { inQ = false; }
+                }
+                if (ch === '#' && !inQ) break;
+                s += ch;
+            }
+            cleaned.push(s);
+        } else {
+            // C-style languages (C, C++, Java, JS, TS, C#, Go, Rust, PHP, Kotlin, Swift)
+            if (inBlockComment) {
+                if (trimmed.includes('*/')) inBlockComment = false;
+                continue;
+            }
+            if (trimmed.startsWith('/*')) {
+                if (!trimmed.includes('*/')) inBlockComment = true;
+                continue;
+            }
+            if (trimmed.startsWith('//')) continue;
+
+            let s = '';
+            let inQ = false, qChar = '';
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if ((ch === '"' || ch === "'") && (i === 0 || line[i-1] !== '\\')) {
+                    if (!inQ) { inQ = true; qChar = ch; }
+                    else if (qChar === ch) { inQ = false; }
+                }
+                if (ch === '/' && i + 1 < line.length && line[i+1] === '/' && !inQ) break;
+                s += ch;
+            }
+            cleaned.push(s);
         }
     }
-
-    if (prompts.length === 0 && codeNeedsStdin(code)) {
-        prompts.push('Enter input: ');
-    }
-
-    return prompts;
+    return cleaned.join('\n');
 }
 
-const STDIN_RE = [
-    /\binput\s*\(/,
-    /\bcin\s*>>/,
-    /\bscanf\s*\(/,
-    /\bgetline\s*\(/,
-    /Scanner\s*\(/,
-    /System\.in/,
-    /readline\s*\(/,
-    /\bgets\s*\(/,
-    /STDIN/,
-];
+function analyzeExecutionFlow(rawCode, langId) {
+    const code = cleanCodeForAnalysis(rawCode, langId);
+    const initialPrints = [];
+    const inputPrompts = [];
+    const pendingPrints = [];
+    const lines = code.split('\n');
 
-function codeNeedsStdin(code) {
-    return STDIN_RE.some(p => p.test(code));
+    let firstInputEncountered = false;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        if (langId === 'python') {
+            const inputMatch = line.match(/\binput\s*\(\s*(?:[fFrRbB]*(['"`])([\s\S]*?)\1)?\s*\)/);
+            if (inputMatch) {
+                if (!firstInputEncountered) {
+                    firstInputEncountered = true;
+                    while (pendingPrints.length > 0) {
+                        initialPrints.push(pendingPrints.shift());
+                    }
+                }
+                let prompt = inputMatch[2] !== undefined ? inputMatch[2] : null;
+                if (!prompt && pendingPrints.length > 0) {
+                    prompt = pendingPrints.pop();
+                }
+                inputPrompts.push(prompt || 'Enter input: ');
+            } else if (!firstInputEncountered) {
+                const printMatch = line.match(/\bprint\s*\(\s*(?:[fFrRbB]*(['"`])([\s\S]*?)\1|([^)]+))\s*\)/);
+                if (printMatch) {
+                    const text = printMatch[2] !== undefined ? printMatch[2] : (printMatch[3] ? printMatch[3].replace(/['"]/g, '').trim() : '');
+                    if (text) pendingPrints.push(text);
+                }
+            }
+        } else if (langId === 'cpp' || langId === 'c') {
+            const isCin = /\bcin\s*>>|\bgetline\s*\(/.test(line);
+            const isScanf = /\bscanf\s*\(|\bgets\s*\(|\bfgets\s*\([^,]+,\s*[^,]+,\s*stdin\)/.test(line);
+
+            if (isCin || isScanf) {
+                let prompt = null;
+                if (pendingPrints.length > 0) {
+                    prompt = pendingPrints.pop();
+                }
+                if (!firstInputEncountered) {
+                    firstInputEncountered = true;
+                    while (pendingPrints.length > 0) {
+                        initialPrints.push(pendingPrints.shift());
+                    }
+                }
+                inputPrompts.push(prompt || 'Enter input: ');
+            } else if (!firstInputEncountered) {
+                const printMatch = line.match(/cout\s*<<\s*["'](.*?)["']/) || line.match(/printf\s*\(\s*["'](.*?)["']/);
+                if (printMatch) {
+                    const str = printMatch[1].replace(/\\n/g, '');
+                    if (str) pendingPrints.push(str);
+                }
+            }
+        } else if (langId === 'java') {
+            const isInput = /\.next|\.readLine|System\.in\.read/.test(line);
+            if (isInput) {
+                let prompt = null;
+                if (pendingPrints.length > 0) {
+                    prompt = pendingPrints.pop();
+                }
+                if (!firstInputEncountered) {
+                    firstInputEncountered = true;
+                    while (pendingPrints.length > 0) {
+                        initialPrints.push(pendingPrints.shift());
+                    }
+                }
+                inputPrompts.push(prompt || 'Enter input: ');
+            } else if (!firstInputEncountered) {
+                const printMatch = line.match(/System\.out\.prints?(?:ln)?\s*\(\s*["'](.*?)["']/);
+                if (printMatch) {
+                    pendingPrints.push(printMatch[1]);
+                }
+            }
+        } else {
+            // Other runtimes (C#, Go, Rust, Ruby, PHP, Swift, Bash)
+            const inputKeywords = /\b(Console\.ReadLine|fmt\.Scan|io::stdin|fgets|readline|readln|read -p)\b/;
+            if (inputKeywords.test(line)) {
+                let prompt = null;
+                if (pendingPrints.length > 0) prompt = pendingPrints.pop();
+                if (!firstInputEncountered) {
+                    firstInputEncountered = true;
+                    while (pendingPrints.length > 0) initialPrints.push(pendingPrints.shift());
+                }
+                inputPrompts.push(prompt || 'Enter input: ');
+            } else if (!firstInputEncountered) {
+                const genericPrint = line.match(/(?:println!|Console\.WriteLine|fmt\.Println|echo|puts)\s*\(?\s*["'](.*?)["']/);
+                if (genericPrint) {
+                    pendingPrints.push(genericPrint[1]);
+                }
+            }
+        }
+    }
+
+    return {
+        initialPrints,
+        inputPrompts,
+        needsStdin: inputPrompts.length > 0
+    };
 }
 
 function askInTerminal(promptText) {
@@ -1091,33 +1193,43 @@ function askInTerminal(promptText) {
     });
 }
 
-async function collectInteractiveInputs(code, langId) {
-    const prompts = extractPrompts(code, langId);
+async function collectInteractiveInputsFromFlow(flow) {
     const inputs = [];
-
-    for (let i = 0; i < prompts.length; i++) {
-        const answer = await askInTerminal(prompts[i]);
+    for (let i = 0; i < flow.inputPrompts.length; i++) {
+        const answer = await askInTerminal(flow.inputPrompts[i]);
         inputs.push(answer);
     }
-
-    return { stdin: inputs.join('\n'), prompts: prompts };
+    return { stdin: inputs.join('\n'), prompts: flow.inputPrompts };
 }
 
-function cleanOutputWithPrompts(stdout, prompts) {
-    if (!stdout || !prompts || prompts.length === 0) return stdout;
-    let res = stdout;
-    prompts.forEach(p => {
-        if (!p) return;
-        const trimmed = p.trim();
-        if (trimmed && res.includes(trimmed)) {
-            const idx = res.indexOf(trimmed);
-            if (idx >= 0 && idx < 60) {
-                res = res.substring(0, idx) + res.substring(idx + trimmed.length);
-                res = res.replace(/^[:\s\r\n]+/, '');
+function cleanResultOutput(rawStdout, initialPrints, inputPrompts) {
+    if (!rawStdout) return '';
+    let result = rawStdout;
+
+    // Remove initial prints if present at the start of rawStdout
+    if (initialPrints && initialPrints.length > 0) {
+        for (const p of initialPrints) {
+            if (!p) continue;
+            const cleanP = p.trim();
+            if (cleanP && result.startsWith(cleanP)) {
+                result = result.substring(cleanP.length).replace(/^[\r\n]+/, '');
             }
         }
-    });
-    return res.trimStart();
+    }
+
+    // Remove the prompt strings that were displayed during interactive input
+    if (inputPrompts && inputPrompts.length > 0) {
+        for (const prompt of inputPrompts) {
+            if (!prompt) continue;
+            const cleanPr = prompt.trim();
+            const idx = result.indexOf(cleanPr);
+            if (idx !== -1 && idx < 120) {
+                result = result.substring(idx + cleanPr.length).replace(/^[\s:\r\n]+/, '');
+            }
+        }
+    }
+
+    return result.trimStart();
 }
 
 async function runCode() {
@@ -1137,20 +1249,33 @@ async function runCode() {
 
     clearTerminal();
 
+    const flow = analyzeExecutionFlow(code, lang.id);
+
     let stdin = '';
     let interactivePrompts = [];
+    let initialPrints = [];
 
-    if (codeNeedsStdin(code)) {
+    if (flow.needsStdin) {
         setExecutingState(true);
+
+        // Print initial output fast before asking for input
+        if (flow.initialPrints.length > 0) {
+            for (const p of flow.initialPrints) {
+                appendTerminal(p, 'stdout');
+            }
+            initialPrints = flow.initialPrints;
+        }
+
         updateStatusBadge('Waiting for Input...', 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30');
 
-        const collected = await collectInteractiveInputs(code, lang.id);
+        const collected = await collectInteractiveInputsFromFlow(flow);
         stdin = collected.stdin;
-        interactivePrompts = collected.prompts;
+        interactivePrompts = flow.inputPrompts;
 
         updateStatusBadge('Executing...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
     } else {
         setExecutingState(true);
+        updateStatusBadge('Executing...', 'bg-blue-500/20 text-blue-400 border-blue-500/30');
     }
 
     const startTime = performance.now();
@@ -1176,7 +1301,7 @@ async function runCode() {
         const result = await response.json();
         const duration = ((performance.now() - startTime) / 1000).toFixed(3);
 
-        handleExecutionResult(result, duration, interactivePrompts);
+        handleExecutionResult(result, duration, interactivePrompts, initialPrints);
 
     } catch (err) {
         console.error('Remote execution error:', err);
@@ -1191,8 +1316,9 @@ async function runCode() {
     }
 }
 
-function handleExecutionResult(result, fallbackDuration, interactivePrompts) {
-    if (!interactivePrompts || interactivePrompts.length === 0) {
+function handleExecutionResult(result, fallbackDuration, interactivePrompts = [], initialPrints = []) {
+    const hasInteractive = (interactivePrompts && interactivePrompts.length > 0) || (initialPrints && initialPrints.length > 0);
+    if (!hasInteractive) {
         clearTerminal();
     }
 
@@ -1206,7 +1332,7 @@ function handleExecutionResult(result, fallbackDuration, interactivePrompts) {
     const time = result.time ? `${result.time}s` : `${fallbackDuration}s`;
     const memory = result.memory ? `${(result.memory / 1024).toFixed(2)} MB` : 'N/A';
 
-    const stdout = cleanOutputWithPrompts(rawStdout, interactivePrompts);
+    const stdout = cleanResultOutput(rawStdout, initialPrints, interactivePrompts);
 
     const metricsBar = document.getElementById('metricsBar');
     if (metricsBar) {
@@ -1223,11 +1349,12 @@ function handleExecutionResult(result, fallbackDuration, interactivePrompts) {
         updateStatusBadge('Accepted', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30');
         if (stdout) {
             appendTerminal(stdout, 'stdout');
-        } else if (!interactivePrompts || interactivePrompts.length === 0) {
+        } else if (!hasInteractive) {
             appendTerminal('Program executed successfully with no output.', 'info');
         }
         if (stderr) appendTerminal(stderr, 'stderr');
     } else if (statusId === 6) {
+        clearTerminal();
         updateStatusBadge('Compilation Error', 'bg-red-500/20 text-red-400 border-red-500/30');
         appendTerminal('--- Compilation Error ---\n', 'compile-error');
         appendTerminal(compileOutput || stderr || 'Failed to compile code.', 'compile-error');
