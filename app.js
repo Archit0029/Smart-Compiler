@@ -877,11 +877,6 @@ function launchCurrentMockupLang() {
     openLanguageFromHome(activeMockupLang);
 }
 
-function openCreatorModal() {
-    const m = document.getElementById('creatorModal');
-    if (m) m.classList.remove('hidden');
-}
-
 function renderHomeLanguages(filter = currentHomeCategory, search = currentHomeSearch) {
     const grid = document.getElementById('homeLanguagesGrid');
     if (!grid) return;
@@ -1139,10 +1134,10 @@ function init3DTiltCards() {
 // 4. INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    initUI();
-    initMonaco();
-    setupEventListeners();
-    setupShortcuts();
+    try { initUI(); } catch (e) { console.error('initUI failed:', e); }
+    try { initMonaco(); } catch (e) { console.error('initMonaco failed:', e); }
+    try { setupEventListeners(); } catch (e) { console.error('setupEventListeners failed:', e); }
+    try { setupShortcuts(); } catch (e) { console.error('setupShortcuts failed:', e); }
 });
 
 function initUI() {
@@ -1268,6 +1263,190 @@ function renderSampleDropdown() {
     });
 }
 
+// 4. MONACO EDITOR SETUP (WITH TIMEOUT FAILSAFE)
+// ==========================================
+let monacoLoadTimeout = null;
+
+function initMonaco() {
+    const loading = document.getElementById('editorLoading');
+
+    // Failsafe: If Monaco takes longer than 1200ms, immediately show the fast editor!
+    monacoLoadTimeout = setTimeout(() => {
+        if (!monacoEditor) {
+            console.log("Monaco CDN taking time — activating responsive fallback editor");
+            showFallbackTextarea();
+        }
+    }, 1200);
+
+    // If require is missing from CDN, fall back immediately
+    if (typeof require === 'undefined') {
+        clearTimeout(monacoLoadTimeout);
+        showFallbackTextarea();
+        return;
+    }
+
+    // Configure cross-origin worker proxy so Chrome won't block Monaco workers
+    window.MonacoEnvironment = {
+        getWorkerUrl: function(workerId, label) {
+            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                self.MonacoEnvironment = { baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/' };
+                importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/base/worker/workerMain.js');
+            `)}`;
+        }
+    };
+
+    try {
+        require.config({
+            paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' },
+            'vs/nls': { availableLanguages: { '*': '' } }
+        });
+
+        require(['vs/editor/editor.main'], () => {
+            clearTimeout(monacoLoadTimeout);
+
+            try {
+                const container = document.getElementById('monaco-container');
+                const loadingEl = document.getElementById('editorLoading');
+
+                // If fallback textarea was already active, preserve any edits made
+                const fallback = document.getElementById('fallback-code-area');
+                const initialCode = (fallback && !fallback.classList.contains('hidden') && fallback.value)
+                    ? fallback.value
+                    : (getSavedCode(currentLang) || LANGUAGES[currentLang].samples.hello);
+
+                if (fallback) fallback.classList.add('hidden');
+
+                monacoEditor = monaco.editor.create(container, {
+                    value: initialCode,
+                    language: LANGUAGES[currentLang].monacoLang,
+                    theme: settings.theme,
+                    fontSize: settings.fontSize,
+                    tabSize: settings.tabSize,
+                    fontFamily: '"JetBrains Mono", Consolas, "Courier New", monospace',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    smoothScrolling: true,
+                    cursorBlinking: 'smooth',
+                    wordWrap: 'on',
+                    padding: { top: 12, bottom: 12 },
+                    renderLineHighlight: 'all',
+                });
+
+                if (loadingEl) loadingEl.style.display = 'none';
+
+                monacoEditor.onDidChangeCursorPosition(e => {
+                    document.getElementById('cursorPos').textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+                });
+
+                monacoEditor.onDidChangeModelContent(() => {
+                    const code = monacoEditor.getValue();
+                    saveCode(currentLang, code);
+                    const saveEl = document.getElementById('saveStatus');
+                    saveEl.textContent = 'Saving...';
+                    setTimeout(() => { saveEl.textContent = 'Saved'; }, 400);
+                });
+
+                monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+                    runCode();
+                });
+            } catch (createErr) {
+                console.warn("Monaco editor creation failed, using fallback:", createErr);
+                showFallbackTextarea();
+            }
+        }, (err) => {
+            clearTimeout(monacoLoadTimeout);
+            console.warn("Monaco failed to load from CDN. Using fallback textarea.", err);
+            showFallbackTextarea();
+        });
+    } catch (e) {
+        clearTimeout(monacoLoadTimeout);
+        showFallbackTextarea();
+    }
+}
+
+function showFallbackTextarea() {
+    if (monacoLoadTimeout) clearTimeout(monacoLoadTimeout);
+
+    const loading = document.getElementById('editorLoading');
+    if (loading) loading.style.display = 'none';
+
+    const fallback = document.getElementById('fallback-code-area');
+    if (!fallback) return;
+
+    fallback.classList.remove('hidden');
+    fallback.style.display = 'block';
+
+    const currentCode = getSavedCode(currentLang) || LANGUAGES[currentLang].samples.hello;
+    if (!fallback.value) {
+        fallback.value = currentCode;
+    }
+
+    // Support Tab indentation and Ctrl+Enter inside fallback textarea
+    if (!fallback.dataset.initialized) {
+        fallback.dataset.initialized = 'true';
+
+        fallback.addEventListener('input', () => {
+            saveCode(currentLang, fallback.value);
+            const saveEl = document.getElementById('saveStatus');
+            if (saveEl) {
+                saveEl.textContent = 'Saving...';
+                setTimeout(() => { saveEl.textContent = 'Saved'; }, 400);
+            }
+        });
+
+        fallback.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = fallback.selectionStart;
+                const end = fallback.selectionEnd;
+                fallback.value = fallback.value.substring(0, start) + '    ' + fallback.value.substring(end);
+                fallback.selectionStart = fallback.selectionEnd = start + 4;
+                saveCode(currentLang, fallback.value);
+            } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                runCode();
+            }
+        });
+
+        // Track cursor in fallback textarea
+        const updateFallbackCursor = () => {
+            const text = fallback.value.substring(0, fallback.selectionStart);
+            const lines = text.split('\n');
+            const lineNum = lines.length;
+            const colNum = lines[lines.length - 1].length + 1;
+            const cursorEl = document.getElementById('cursorPos');
+            if (cursorEl) cursorEl.textContent = `Ln ${lineNum}, Col ${colNum}`;
+        };
+
+        fallback.addEventListener('keyup', updateFallbackCursor);
+        fallback.addEventListener('click', updateFallbackCursor);
+    }
+}
+
+function getEditorCode() {
+    if (monacoEditor) {
+        return monacoEditor.getValue();
+    }
+    return document.getElementById('fallback-code-area').value;
+}
+
+function setEditorCode(code, monacoLang) {
+    if (monacoEditor) {
+        monacoEditor.setValue(code);
+        if (monacoLang) {
+            monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
+        }
+    } else {
+        const fallback = document.getElementById('fallback-code-area');
+        fallback.value = code;
+    }
+}
+
+// ==========================================
+// 5. LANGUAGE SWITCHING & TEMPLATES
+// ==========================================
+
 function switchLanguage(langId) {
     if (!LANGUAGES[langId]) return;
     currentLang = langId;
@@ -1371,6 +1550,16 @@ function openCreatorModal() {
 
 function closeCreatorModal() {
     const modal = document.getElementById('creatorModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function openSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settingsModal');
     if (modal) modal.classList.add('hidden');
 }
 
@@ -2153,6 +2342,74 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 2500);
 }
+
+
+// Global Modal & Dropdown Action Helpers
+function openLanguageModal() {
+    const modal = document.getElementById('allLanguagesModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        const searchInput = document.getElementById('langSearchInput');
+        if (searchInput) searchInput.focus();
+    }
+}
+
+function closeLanguageModal() {
+    const modal = document.getElementById('allLanguagesModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function openCreatorModal() {
+    const modal = document.getElementById('creatorModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeCreatorModal() {
+    const modal = document.getElementById('creatorModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function openSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function toggleSampleDropdown(event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('sampleDropdown');
+    if (dropdown) dropdown.classList.toggle('hidden');
+    const moreDropdown = document.getElementById('moreDropdown');
+    if (moreDropdown) moreDropdown.classList.add('hidden');
+}
+
+function toggleMoreDropdown(event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('moreDropdown');
+    if (dropdown) dropdown.classList.toggle('hidden');
+    const sampleDropdown = document.getElementById('sampleDropdown');
+    if (sampleDropdown) sampleDropdown.classList.add('hidden');
+}
+
+// Bind to window for direct HTML onclick safety
+window.openLanguageModal = openLanguageModal;
+window.closeLanguageModal = closeLanguageModal;
+window.openCreatorModal = openCreatorModal;
+window.closeCreatorModal = closeCreatorModal;
+window.openSettingsModal = openSettingsModal;
+window.closeSettingsModal = closeSettingsModal;
+window.toggleSampleDropdown = toggleSampleDropdown;
+window.toggleMoreDropdown = toggleMoreDropdown;
+window.runCode = runCode;
+window.navigateToHome = navigateToHome;
+window.navigateToCompiler = navigateToCompiler;
+window.openLanguageFromHome = openLanguageFromHome;
+window.launchCurrentMockupLang = launchCurrentMockupLang;
+window.scrollToLanguages = scrollToLanguages;
 
 function setupEventListeners() {
     // 1. Run button

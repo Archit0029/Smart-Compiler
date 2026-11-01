@@ -382,7 +382,7 @@
             <div id="ideHeaderControls" class="hidden items-center gap-2">
                 <!-- Language Selector Dropdown (Mobile + All Languages) -->
                 <div class="relative">
-                    <button id="langModalBtn" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition cursor-pointer">
+                    <button id="langModalBtn" onclick="openLanguageModal()" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition cursor-pointer">
                         <i id="currentLangIcon" class="fab fa-python text-yellow-400"></i>
                         <span id="currentLangLabel">Python 3</span>
                         <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
@@ -391,7 +391,7 @@
 
                 <!-- Templates Dropdown -->
                 <div class="relative hidden sm:block">
-                    <button id="sampleModalBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 transition cursor-pointer" title="Load pre-built examples">
+                    <button id="sampleModalBtn" onclick="toggleSampleDropdown(event)" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 transition cursor-pointer" title="Load pre-built examples">
                         <i class="fas fa-lightbulb text-amber-400"></i>
                         <span>Examples</span>
                         <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
@@ -402,7 +402,7 @@
                 </div>
 
                 <!-- RUN BUTTON -->
-                <button id="runBtn" class="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-emerald-500/20 transition-all cursor-pointer">
+                <button id="runBtn" onclick="runCode()" class="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 active:scale-95 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-lg shadow-emerald-500/20 transition-all cursor-pointer">
                     <i class="fas fa-play text-xs" id="runIcon"></i>
                     <span id="runText">Run</span>
                     <kbd class="hidden xl:inline text-[10px] bg-black/30 px-1.5 py-0.5 rounded font-mono text-green-200">Ctrl+Enter</kbd>
@@ -410,7 +410,7 @@
 
                 <!-- More Options Dropdown -->
                 <div class="relative">
-                    <button id="moreMenuBtn" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition cursor-pointer" title="More Actions">
+                    <button id="moreMenuBtn" onclick="toggleMoreDropdown(event)" class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition cursor-pointer" title="More Actions">
                         <i class="fas fa-ellipsis-v text-sm"></i>
                     </button>
                     <div id="moreDropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1.5 z-50 text-xs">
@@ -438,7 +438,7 @@
                             <i class="fas fa-undo text-red-400 w-4"></i> Reset to Default
                         </button>
                         <div class="border-t border-gray-800 my-1"></div>
-                        <button id="settingsBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white">
+                        <button id="settingsBtn" onclick="openSettingsModal()" class="w-full text-left px-3 py-2 hover:bg-gray-800 flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
                             <i class="fas fa-cog text-gray-400 w-4"></i> Settings
                         </button>
                     </div>
@@ -953,7 +953,7 @@ All 16+ runtimes are connected and ready.</span>
             <div class="absolute -bottom-16 -left-16 w-44 h-44 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
             <!-- Close Button -->
-            <button id="closeCreatorModal" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-xl hover:bg-gray-800 transition">
+            <button id="closeCreatorModal" onclick="closeCreatorModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white p-2 rounded-xl hover:bg-gray-800 transition cursor-pointer">
                 <i class="fas fa-times text-base"></i>
             </button>
 
@@ -1017,7 +1017,7 @@ All 16+ runtimes are connected and ready.</span>
                     </h3>
                     <p class="text-xs text-gray-400">Choose from 16+ runtimes with instant compiler support</p>
                 </div>
-                <button id="closeLangModal" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800">
+                <button id="closeLangModal" onclick="closeLanguageModal()" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800 cursor-pointer">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
@@ -1044,7 +1044,7 @@ All 16+ runtimes are connected and ready.</span>
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
                     <i class="fas fa-sliders-h text-blue-400"></i> Editor Settings
                 </h3>
-                <button id="closeSettingsModal" class="text-gray-400 hover:text-white">
+                <button id="closeSettingsModal" onclick="closeSettingsModal()" class="text-gray-400 hover:text-white cursor-pointer">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
