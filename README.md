@@ -1,14 +1,16 @@
-# ⚡ Smart Compiler (PRO) - Online Multi-Language Cloud IDE
+# ⚡ Smart Compiler (PRO) - Online Compiler for Python, Java, C++, SQL & Web
 
 > Engineered & Created by **[Archit Bishnoi](https://github.com/Archit0029)**
 >
-> Smart Compiler is a high-performance, zero-installation online code editor and compiler supporting 16+ programming languages, interactive standard input (stdin), real-time web development preview, and VS Code-grade Monaco editing.
+> Smart Compiler is a high-performance, zero-installation online code editor and compiler supporting **Python (py online)**, **Java (java online)**, **C++**, **C**, **SQL (MySQL & SQLite)**, and **Web Development (HTML, CSS, JS)** with live interactive stdin input and VS Code-grade Monaco editing.
 
-[![Smart Compiler](https://img.shields.io/badge/Smart%20Compiler-v2.0%20Pro-3b82f6?style=for-the-badge&logo=visualstudiocode)](https://smartcompiler-swart.vercel.app/)
+[![Smart Compiler](https://img.shields.io/badge/Smart%20Compiler-Online%20IDE-3b82f6?style=for-the-badge&logo=visualstudiocode)](https://smartcompiler-swart.vercel.app/)
+[![Python Compiler](https://img.shields.io/badge/Python-Py%20Online-3776ab?style=for-the-badge&logo=python)](https://smartcompiler-swart.vercel.app/?lang=python)
+[![Java Compiler](https://img.shields.io/badge/Java-Java%20Online-f89820?style=for-the-badge&logo=openjdk)](https://smartcompiler-swart.vercel.app/?lang=java)
+[![SQL Online](https://img.shields.io/badge/SQL-MySQL%20Online-4479a1?style=for-the-badge&logo=mysql)](https://smartcompiler-swart.vercel.app/?lang=sql)
+[![Web Dev](https://img.shields.io/badge/Web-HTML%20Online-e34f26?style=for-the-badge&logo=html5)](https://smartcompiler-swart.vercel.app/?lang=web)
 [![Created By Archit Bishnoi](https://img.shields.io/badge/Created%20By-Archit%20Bishnoi-10b981?style=for-the-badge&logo=github)](https://github.com/Archit0029)
 [![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Website-blueviolet?style=for-the-badge&logo=vercel)](https://architbishnoi-portfolio.vercel.app/)
-[![Languages](https://img.shields.io/badge/Languages-16%2B%20Supported-purple?style=for-the-badge)](#-supported-languages)
-[![Deploy with Vercel](https://img.shields.io/badge/Deploy%20with-Vercel-black?style=for-the-badge&logo=vercel)](#-deploying-to-vercel)
 
 ---
 

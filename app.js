@@ -547,6 +547,87 @@ const settings = {
 };
 
 // ==========================================
+// ==========================================
+// SEO URL ROUTING & KEYWORD META MANAGEMENT
+// ==========================================
+
+const LANG_ALIASES = {
+    'python': 'python',
+    'py': 'python',
+    'python3': 'python',
+    'java': 'java',
+    'sql': 'sql',
+    'mysql': 'sql',
+    'sqlite': 'sql',
+    'web': 'web',
+    'html': 'web',
+    'html5': 'web',
+    'cpp': 'cpp',
+    'c++': 'cpp',
+    'c': 'c',
+    'js': 'javascript',
+    'javascript': 'javascript',
+    'node': 'javascript',
+    'ts': 'typescript',
+    'typescript': 'typescript',
+    'cs': 'csharp',
+    'csharp': 'csharp',
+    'c#': 'csharp',
+    'go': 'go',
+    'golang': 'go',
+    'rust': 'rust',
+    'php': 'php',
+    'ruby': 'ruby',
+    'rb': 'ruby',
+    'kotlin': 'kotlin',
+    'kt': 'kotlin',
+    'swift': 'swift',
+    'bash': 'bash',
+    'sh': 'bash'
+};
+
+const SEO_TITLES = {
+    'python': 'Online Python Compiler (Py Online & Python 3) | Smart Compiler',
+    'java': 'Online Java Compiler (Java Online & JDK 17) | Smart Compiler',
+    'sql': 'Online SQL & MySQL Compiler (SQL Online & SQLite) | Smart Compiler',
+    'web': 'Web Development Online - HTML, CSS & JavaScript Playground | Smart Compiler',
+    'cpp': 'Online C++ Compiler (C++ Online & GCC 14) | Smart Compiler',
+    'c': 'Online C Compiler (C Online & GCC 14) | Smart Compiler',
+    'javascript': 'Online JavaScript Compiler (JS Online & Node.js) | Smart Compiler',
+    'csharp': 'Online C# Compiler (C# Online .NET) | Smart Compiler',
+    'go': 'Online Go Compiler (Golang Online) | Smart Compiler',
+    'rust': 'Online Rust Compiler (Rust Online) | Smart Compiler',
+    'typescript': 'Online TypeScript Compiler (TS Online) | Smart Compiler',
+    'php': 'Online PHP Compiler (PHP Online) | Smart Compiler'
+};
+
+function getLanguageFromURL() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get('lang') || params.get('language') || (window.location.hash ? window.location.hash.replace('#', '') : '');
+        if (q) {
+            const clean = q.toLowerCase().trim();
+            if (LANG_ALIASES[clean]) {
+                return LANG_ALIASES[clean];
+            }
+        }
+    } catch (e) {}
+    return null;
+}
+
+function updateURLParameter(langId) {
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('lang', langId);
+        window.history.replaceState({ lang: langId }, '', url.toString());
+    } catch (e) {}
+}
+
+function updateDynamicSEOTitle(langId) {
+    const title = SEO_TITLES[langId] || `Online ${LANGUAGES[langId] ? LANGUAGES[langId].name : ''} Compiler | Smart Compiler`;
+    document.title = title;
+}
+
 // 3. INITIALIZATION
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
