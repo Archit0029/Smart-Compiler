@@ -822,6 +822,11 @@ function showCompilerView(langId, updateHistory = true) {
             updateURLParameter(targetLang);
         }
         updateDynamicSEOTitle(targetLang);
+
+        if (LANGUAGES[targetLang].isWebMode) {
+            setTimeout(runWebPreview, 80);
+            setTimeout(runWebPreview, 300);
+        }
     }
 
     if (monacoEditor) {
@@ -1310,9 +1315,15 @@ function initMonaco() {
 
                 // If fallback textarea was already active, preserve any edits made
                 const fallback = document.getElementById('fallback-code-area');
+                let defaultSample = '';
+                if (LANGUAGES[currentLang]) {
+                    defaultSample = LANGUAGES[currentLang].isWebMode
+                        ? (LANGUAGES[currentLang].samples?.hello?.html || '')
+                        : (LANGUAGES[currentLang].samples?.hello || '');
+                }
                 const initialCode = (fallback && !fallback.classList.contains('hidden') && fallback.value)
                     ? fallback.value
-                    : (getSavedCode(currentLang) || LANGUAGES[currentLang].samples.hello);
+                    : (getSavedCode(currentLang) || defaultSample);
 
                 if (fallback) fallback.classList.add('hidden');
 
@@ -1494,8 +1505,11 @@ function loadLanguage(langId) {
             webDevMode.classList.remove('hidden');
             webDevMode.classList.add('flex');
         }
+        switchWebTab('html');
         loadWebCode();
         runWebPreview();
+        setTimeout(runWebPreview, 60);
+        setTimeout(runWebPreview, 250);
     } else {
         if (webDevMode) {
             webDevMode.classList.add('hidden');
@@ -1969,6 +1983,7 @@ async function runCode() {
     const lang = LANGUAGES[currentLang];
     if (lang.isWebMode) {
         runWebPreview();
+        showToast('Live preview updated');
         return;
     }
 
@@ -2149,27 +2164,70 @@ function runClientSideJS(code) {
 // ==========================================
 // 7. WEB DEVELOPMENT PLAYGROUND
 // ==========================================
+function buildWebPreviewSource(html, css, js) {
+    const trimmedHtml = (html || '').trim();
+    const styleTag = `<style>\n${css || ''}\n</style>`;
+    const scriptTag = `<script>\ntry {\n${js || ''}\n} catch(err) { console.error("Script error in preview:", err); }\n<\/script>`;
+
+    // If user provided a complete HTML document, inject style and script cleanly
+    if (/<html[\s>]/i.test(trimmedHtml)) {
+        let full = trimmedHtml;
+        if (/<\/head>/i.test(full)) {
+            full = full.replace(/<\/head>/i, `${styleTag}\n</head>`);
+        } else {
+            full = `${styleTag}\n${full}`;
+        }
+        if (/<\/body>/i.test(full)) {
+            full = full.replace(/<\/body>/i, `${scriptTag}\n</body>`);
+        } else {
+            full = `${full}\n${scriptTag}`;
+        }
+        return full;
+    }
+
+    // Otherwise wrap snippet in clean standard HTML5 boilerplate
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    ${styleTag}
+</head>
+<body>
+    ${trimmedHtml}
+    ${scriptTag}
+</body>
+</html>`;
+}
+
 function loadWebCode() {
+    let loaded = false;
     const saved = localStorage.getItem('smart_compiler_web_code');
     if (saved) {
         try {
             const data = JSON.parse(saved);
-            const h = document.getElementById('web-html-code');
-            const c = document.getElementById('web-css-code');
-            const j = document.getElementById('web-js-code');
-            if (h) h.value = data.html || '';
-            if (c) c.value = data.css || '';
-            if (j) j.value = data.js || '';
-            return;
+            if (data && (data.html || data.css || data.js)) {
+                const h = document.getElementById('web-html-code');
+                const c = document.getElementById('web-css-code');
+                const j = document.getElementById('web-js-code');
+                if (h) h.value = data.html || '';
+                if (c) c.value = data.css || '';
+                if (j) j.value = data.js || '';
+                loaded = true;
+            }
         } catch(e) {}
     }
-    const def = LANGUAGES.web.samples.hello;
-    const h = document.getElementById('web-html-code');
-    const c = document.getElementById('web-css-code');
-    const j = document.getElementById('web-js-code');
-    if (h) h.value = def.html;
-    if (c) c.value = def.css;
-    if (j) j.value = def.js;
+
+    if (!loaded) {
+        const def = LANGUAGES.web.samples.hello;
+        const h = document.getElementById('web-html-code');
+        const c = document.getElementById('web-css-code');
+        const j = document.getElementById('web-js-code');
+        if (h) h.value = def.html || '';
+        if (c) c.value = def.css || '';
+        if (j) j.value = def.js || '';
+        saveWebCode();
+    }
 }
 
 function saveWebCode() {
@@ -2196,30 +2254,12 @@ function runWebPreview() {
     const previewFrame = document.getElementById('web-preview-frame');
     if (!previewFrame) return;
 
-    const source = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                ${css}
-            </style>
-        </head>
-        <body>
-            ${html}
-            <script>
-                try {
-                    ${js}
-                } catch(err) {
-                    console.error("Script error in preview:", err);
-                }
-            <\/script>
-        </body>
-        </html>
-    `;
-
-    previewFrame.srcdoc = source;
+    const source = buildWebPreviewSource(html, css, js);
+    try {
+        previewFrame.srcdoc = source;
+    } catch (e) {
+        console.error("Failed to render preview srcdoc:", e);
+    }
 }
 
 function switchWebTab(tab) {
@@ -2422,11 +2462,16 @@ window.navigateToCompiler = navigateToCompiler;
 window.openLanguageFromHome = openLanguageFromHome;
 window.launchCurrentMockupLang = launchCurrentMockupLang;
 window.scrollToLanguages = scrollToLanguages;
+window.runWebPreview = runWebPreview;
+window.switchWebTab = switchWebTab;
+window.setWebViewport = setWebViewport;
 
 function setupEventListeners() {
     // 1. Run button
     const runBtn = document.getElementById('runBtn');
-    if (runBtn) runBtn.addEventListener('click', runCode);
+    if (runBtn) {
+        runBtn.onclick = runCode;
+    }
 
     // 2. Examples / Templates dropdown toggle
     const sampleBtn = document.getElementById('sampleModalBtn');
